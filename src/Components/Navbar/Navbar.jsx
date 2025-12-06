@@ -1,14 +1,29 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router'
+import useAuth from '../../hooks/useAuth'
 
 const Navbar = () => {
+
+  const { user, logOut } = useAuth();
+
   const links = <>
     <li><NavLink to='/'>Home</NavLink></li>
     <li><NavLink to='/allContests'>AllContests</NavLink></li>
     <li><NavLink to='/'>Home</NavLink></li>
     <li><NavLink to='/'>Home</NavLink></li>
-
   </>
+
+  const handleLogout = () => {
+logOut()
+.then(result => {
+  console.log(result);
+})
+.catch(error => {
+  console.log(error);
+})
+  };
+
+
   return (
     <div className='bg-gray-200'>
       <div className="navbar w-11/12 mx-auto ">
@@ -31,8 +46,24 @@ const Navbar = () => {
           </ul>
         </div>
         <div className="navbar-end">
-          <Link to='/login' className="btn btn-primary mr-2">Login</Link>
-          <Link to='/register' className="btn btn-secondary">Register</Link>
+          {
+            user ? (
+              <>
+                <Link to='/login' className="btn btn-primary mr-2">Logo</Link>
+                <button 
+                onClick={handleLogout}
+                className="btn btn-secondary">Sign Out</button>
+              </>
+            ) :
+              (
+                <>
+                  <Link to='/login' className="btn btn-primary mr-2">Login</Link>
+                  <Link to='/register' className="btn btn-secondary">Register</Link>
+                </>
+              )
+          }
+          {/* <Link to='/login' className="btn btn-primary mr-2">Login</Link>
+          <Link to='/register' className="btn btn-secondary">Register</Link> */}
         </div>
       </div>
     </div>
