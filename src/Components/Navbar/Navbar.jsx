@@ -4,7 +4,7 @@ import useAuth from '../../hooks/useAuth'
 
 const Navbar = () => {
 
-  const { user, logOut } = useAuth();
+  const { user, logOut,} = useAuth();
 
   const links = <>
     <li><NavLink to='/'>Home</NavLink></li>
@@ -14,13 +14,13 @@ const Navbar = () => {
   </>
 
   const handleLogout = () => {
-logOut()
-.then(result => {
-  console.log(result);
-})
-.catch(error => {
-  console.log(error);
-})
+    logOut()
+      .then(result => {
+        console.log(result);
+      })
+      .catch(error => {
+        console.log(error);
+      })
   };
 
 
@@ -49,10 +49,12 @@ logOut()
           {
             user ? (
               <>
-                <Link to='/login' className="btn btn-primary mr-2">Logo</Link>
-                <button 
-                onClick={handleLogout}
-                className="btn btn-secondary">Sign Out</button>
+                {user.photoURL && (
+                <img src={user.photoURL} className=" mr-2 w-10 h-10 rounded-full border" alt="User" />
+              )}
+                <button
+                  onClick={handleLogout}
+                  className="btn btn-secondary">Sign Out</button>
               </>
             ) :
               (
@@ -62,8 +64,6 @@ logOut()
                 </>
               )
           }
-          {/* <Link to='/login' className="btn btn-primary mr-2">Login</Link>
-          <Link to='/register' className="btn btn-secondary">Register</Link> */}
         </div>
       </div>
     </div>

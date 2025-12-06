@@ -1,32 +1,43 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import useAuth from '../hooks/useAuth'
+import { updateProfile } from 'firebase/auth'
 
 const Register = () => {
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const { registerUser, googleSignIn } = useAuth();
+  const navigate = useNavigate();
 
   const handleRegister = (data) => {
     registerUser(data.email, data.password)
-      .then(result => {
-        console.log(result)
+      .then((result) => {
+        updateProfile(result.user, {
+          displayName: data.name,
+          photoURL: data.photo
+        })
+          .catch(error => console.log(error));
+      })
+      .then(() => {
+        navigate('/');
       })
       .catch(error => {
         console.log(error)
       })
   }
 
+
+
   const handleGoogleSignIn = () => {
     googleSignIn()
-    .then(result => {
-      console.log(result);
-    })
-    .catch(error => {
-      console.log(error);
-    })
+      .then(result => {
+        console.log(result);
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 
   return (
