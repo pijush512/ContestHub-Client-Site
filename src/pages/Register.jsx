@@ -34,6 +34,7 @@ const Register = () => {
     googleSignIn()
       .then(result => {
         console.log(result);
+        navigate('/');
       })
       .catch(error => {
         console.log(error);

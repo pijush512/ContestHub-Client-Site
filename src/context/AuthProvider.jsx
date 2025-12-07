@@ -31,6 +31,7 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   }
 
+
   const updateUserProfile = (profile) => {
     return updateProfile(auth.currentUser, profile)
   }
@@ -47,20 +48,6 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  useEffect(() => {
-  const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
-    if (currentUser) {
-      await currentUser.reload(); // এটা দিলেই photoURL আপডেট হবে
-      setUser(currentUser);
-    } else {
-      setUser(null);
-    }
-    setLoading(false);
-  });
-
-  return () => unSubscribe();
-}, []);
-
   const authInfo = {
     user,
     loading,
@@ -72,9 +59,9 @@ const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext value={authInfo}>
+    <AuthContext.Provider value={authInfo}>
       {children}
-    </AuthContext>
+    </AuthContext.Provider>
   )
 }
 
