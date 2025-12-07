@@ -1,122 +1,99 @@
-// src/Components/Banner/Banner.jsx
-import React, { useState, useEffect } from 'react';
+// // src/components/HeroBanner.jsx
+// import { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
 
-export default function HeroBanner() {
-  const [search, setSearch] = useState('');
-  const [currentSlide, setCurrentSlide] = useState(0);
+// const HeroBanner = () => {
+//   const [searchTerm, setSearchTerm] = useState('');
+//   const navigate = useNavigate();
 
-  const slides = [
-    { title: "Win ₹5 Lakh in Coding Championship", desc: "Top 50 coders battle every month" },
-    { title: "iPhone 16 Pro Max Giveaway", desc: "Design & Photography contests running now" },
-    { title: "₹3 Lakh Gaming Tournament", desc: "BGMI • Free Fire • Valorant" }
-  ];
+//   const handleSearch = (e) => {
+//     e.preventDefault();
+//     if (searchTerm.trim()) {
+//       navigate(`/allContests?search=${searchTerm}`);
+//     }
+//   };
 
-  // Auto slide
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 3);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+//   return (
+//     <div className="relative h-96 md:h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 overflow-hidden">
+//       {/* Background Pattern */}
+//       <div className="absolute inset-0 bg-black opacity-40"></div>
+//       <div className="absolute inset-0 bg-[url('https://i.ibb.co.com/4z7v7Z/pattern.png')] opacity-10"></div>
 
-  const trending = [
-    "LeetCode Weekly", "Figma UI Challenge", "BGMI Pro League", "Logo Sprint",
-    "Photography Awards", "React Hackathon", "Writing Battle", "App Jam"
-  ];
+//       <div className="relative h-full flex flex-col items-center justify-center text-center text-white px-6">
+//         <h1 className="text-5xl md:text-7xl font-bold mb-6 drop-shadow-2xl">
+//           Join The Ultimate Contest Hub
+//         </h1>
+//         <p className="text-xl md:text-3xl mb-10 font-light">
+//           Win Big. Show Your Talent. Be a Champion!
+//         </p>
+
+//         {/* Search Bar */}
+//         <form onSubmit={handleSearch} className="w-full max-w-2xl">
+//           <div className="flex gap-3">
+//             <input
+//               type="text"
+//               value={searchTerm}
+//               onChange={(e) => setSearchTerm(e.target.value)}
+//               placeholder="Search by contest type: Logo, Photo, Gaming..."
+//               className="input input-bordered input-lg w-full text-black text-lg"
+//             />
+//             <button type="submit" className="btn btn-neutral btn-lg px-10">
+//               Search
+//             </button>
+//           </div>
+//         </form>
+//       </div>
+
+//       {/* Wave Bottom */}
+//       <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+//         <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="h-20 w-full">
+//           <path d="M0,0V60C300,120 900,0 1200,60V0Z" className="fill-base-100"></path>
+//         </svg>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default HeroBanner;
+
+
+
+import React from "react";
+
+const Banner = ({ onSearch }) => {
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const text = e.target.search.value;
+    onSearch(text); // backend query caller
+  };
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-b from-sky-50 via-white to-blue-50 overflow-hidden">
-      {/* Background blobs */}
-      <div className="absolute inset-0">
-        <div className="absolute top-10 left-10 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply blur-3xl opacity-30 animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-sky-300 rounded-full mix-blend-multiply blur-3xl opacity-25 animate-pulse delay-1000"></div>
-      </div>
-
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 text-center">
-
-        {/* Logo */}
-        <div className="mb-8">
-          <div className="w-28 h-28 bg-gradient-to-br from-blue-600 to-sky-600 rounded-3xl shadow-2xl flex items-center justify-center flex text-white text-5xl font-black">
-            CH
-          </div>
-        </div>
-
-        {/* Title */}
-        <h1 className="text-7xl md:text-9xl font-black text-gray-900 mb-12">
-          Contest<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-600">Hub</span>
+    <div className="bg-gradient-to-r from-blue-500 to-purple-600 py-20">
+      <div className="w-11/12 mx-auto text-center text-white">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6">
+          Find Exciting Contests & Participate!
         </h1>
 
-        {/* Slider – এখানেই ম্যাজিক */}
-        <div className="relative h-32 mb-10 w-full max-w-4xl">
-          <div className="absolute inset-0 flex items-center justify-center">
-            {slides.map((slide, index) => (
-              <div
-                key={index}
-                className={`absolute w-full transition-all duration-1000 ease-in-out ${
-                  index === currentSlide
-                    ? 'opacity-100 translate-y-0'
-                    : 'opacity-0 translate-y-8'
-                }`}
-              >
-                <h2 className="text-3xl md:text-5xl font-bold text-blue-900 mb-3">
-                  {slide.title}
-                </h2>
-                <p className="text-xl text-blue-700">{slide.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <p className="text-lg md:text-xl opacity-90 w-3/4 mx-auto mb-8">
+          Search your favorite contest types and start competing today.
+        </p>
 
-        {/* Search */}
-        <div className="w-full max-w-3xl mb-12">
-          <div className="relative">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search contests: Programming, Design, Gaming..."
-              className="w-full px-10 py-7 text-xl bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-blue-100 focus:outline-none focus:ring-4 focus:ring-sky-300"
-            />
-            <button className="absolute right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-sky-600 text-white font-bold px-12 py-5 rounded-2xl shadow-lg hover:shadow-2xl transition">
-              Search
-            </button>
-          </div>
-        </div>
-
-        {/* 3 Dots */}
-        <div className="flex gap-4">
-          {[0, 1, 2].map((i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentSlide(i)}
-              className={`h-3 rounded-full transition-all duration-500 ${
-                currentSlide === i ? 'w-16 bg-blue-600' : 'w-3 bg-blue-300'
-              }`}
-            />
-          ))}
-        </div>
+        <form
+          onSubmit={handleSearch}
+          className="flex justify-center items-center gap-3"
+        >
+          <input
+            type="text"
+            name="search"
+            placeholder="Search contest types..."
+            className="input input-bordered w-64 md:w-96"
+            required
+          />
+          <button className="btn btn-accent">Search</button>
+        </form>
       </div>
-
-      {/* Marquee */}
-      <div className="absolute bottom-0 w-full bg-gradient-to-t from-blue-900/95 to-transparent py-8">
-        <div className="flex animate-marquee whitespace-nowrap">
-          {[...trending, ...trending].map((item, i) => (
-            <span key={i} className="mx-10 text-white font-medium text-lg">
-              {item} •
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <style jsx>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-          animation: marquee 30s linear infinite;
-        }
-      `}</style>
-    </section>
+    </div>
   );
-}
+};
+
+export default Banner;
