@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
-
+import '../Navbar/Navbar.css'
 const Navbar = () => {
 
   const { user, logOut, } = useAuth();
@@ -51,18 +51,8 @@ const Navbar = () => {
         <div className="navbar-end">
           {
             user ? (
-              // <>
-              //   {user.photoURL && (
-              //   <img src={user.photoURL} className=" mr-4 w-10 h-10 rounded-full border" alt="User" />
-              // )}
-              //   <button
-              //     onClick={handleLogout}
-              //     className="btn btn-secondary">Sign Out</button>
-              // </>
-
               <>
                 <div className="dropdown dropdown-end">
-                  {/* এটা ক্লিক করলে ড্রপডাউন ওপেন হবে */}
                   <div tabIndex={0} role="button" className="avatar online cursor-pointer">
                     <div className="w-10 h-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                       <img
@@ -71,8 +61,6 @@ const Navbar = () => {
                       />
                     </div>
                   </div>
-
-                  {/* ড্রপডাউন মেনু */}
                   <ul tabIndex={0} className="dropdown-content menu p-3 shadow bg-base-100 rounded-box w-56 mt-3 z-50">
                     <li className="menu-title pb-2 border-b">
                       <span className="font-bold text-lg">
@@ -90,9 +78,9 @@ const Navbar = () => {
                     <li>
                       <button
                         onClick={handleLogout}
-                        className="btn btn-sm btn-primary text-white mt-2 w-full"
+                        className="btn btn-primary text-white mt-2 w-full"
                       >
-                        Logout
+                        Sign Out
                       </button>
                     </li>
                   </ul>

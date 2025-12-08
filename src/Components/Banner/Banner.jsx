@@ -1,95 +1,54 @@
-// // src/components/HeroBanner.jsx
-// import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-
-// const HeroBanner = () => {
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const navigate = useNavigate();
-
-//   const handleSearch = (e) => {
-//     e.preventDefault();
-//     if (searchTerm.trim()) {
-//       navigate(`/allContests?search=${searchTerm}`);
-//     }
-//   };
-
-//   return (
-//     <div className="relative h-96 md:h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 overflow-hidden">
-//       {/* Background Pattern */}
-//       <div className="absolute inset-0 bg-black opacity-40"></div>
-//       <div className="absolute inset-0 bg-[url('https://i.ibb.co.com/4z7v7Z/pattern.png')] opacity-10"></div>
-
-//       <div className="relative h-full flex flex-col items-center justify-center text-center text-white px-6">
-//         <h1 className="text-5xl md:text-7xl font-bold mb-6 drop-shadow-2xl">
-//           Join The Ultimate Contest Hub
-//         </h1>
-//         <p className="text-xl md:text-3xl mb-10 font-light">
-//           Win Big. Show Your Talent. Be a Champion!
-//         </p>
-
-//         {/* Search Bar */}
-//         <form onSubmit={handleSearch} className="w-full max-w-2xl">
-//           <div className="flex gap-3">
-//             <input
-//               type="text"
-//               value={searchTerm}
-//               onChange={(e) => setSearchTerm(e.target.value)}
-//               placeholder="Search by contest type: Logo, Photo, Gaming..."
-//               className="input input-bordered input-lg w-full text-black text-lg"
-//             />
-//             <button type="submit" className="btn btn-neutral btn-lg px-10">
-//               Search
-//             </button>
-//           </div>
-//         </form>
-//       </div>
-
-//       {/* Wave Bottom */}
-//       <div className="absolute bottom-0 left-0 w-full overflow-hidden">
-//         <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="h-20 w-full">
-//           <path d="M0,0V60C300,120 900,0 1200,60V0Z" className="fill-base-100"></path>
-//         </svg>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default HeroBanner;
-
-
-
-import React from "react";
+import React, { useState } from "react";
 
 const Banner = ({ onSearch }) => {
+  const [query, setQuery] = useState("");
+
   const handleSearch = (e) => {
     e.preventDefault();
-    const text = e.target.search.value;
-    onSearch(text); // backend query caller
+    if (onSearch) onSearch(query); // send search value to parent
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-purple-600 py-20">
-      <div className="w-11/12 mx-auto text-center text-white">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          Find Exciting Contests & Participate!
+    <div className="relative w-full h-[70vh] md:h-[80vh] flex items-center justify-center">
+      {/* Background Image */}
+      <img
+        src="https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2070"
+        alt="banner"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+
+      {/* Dark / Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/70"></div>
+
+      {/* Content */}
+      <div className="relative z-10 text-center px-4 max-w-3xl">
+        <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
+          Find the Perfect Contest For You
         </h1>
 
-        <p className="text-lg md:text-xl opacity-90 w-3/4 mx-auto mb-8">
-          Search your favorite contest types and start competing today.
+        <p className="text-gray-200 text-sm md:text-lg mb-8">
+          Search by contest type, category, or topic
         </p>
 
+        {/* Search Box */}
         <form
           onSubmit={handleSearch}
-          className="flex justify-center items-center gap-3"
+          className="flex items-center bg-white/90 backdrop-blur-lg rounded-xl px-4 py-2 w-full shadow-lg"
         >
           <input
             type="text"
-            name="search"
-            placeholder="Search contest types..."
-            className="input input-bordered w-64 md:w-96"
-            required
+            placeholder="Search contest type…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="flex-1 bg-transparent outline-none px-2 py-2 text-gray-700"
           />
-          <button className="btn btn-accent">Search</button>
+
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all"
+          >
+            Search
+          </button>
         </form>
       </div>
     </div>
