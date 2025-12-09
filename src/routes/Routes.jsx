@@ -10,6 +10,12 @@ import DashboardLayout from "../pages/Dashboard/DashboardLayout/DashboardLayout"
 import AdminDashboard from "../pages/Dashboard/AdminDashboard/AdminDashboard";
 import CreatorDashboard from "../pages/Dashboard/CreatorDashboard/CreatorDashboard";
 import UserDashboard from "../pages/Dashboard/UserDashboard/UserDashboard";
+import AddContest from "../pages/Dashboard/CreatorDashboard/AddContest";
+import MyContests from "../pages/Dashboard/CreatorDashboard/MyContests";
+import EditContest from "../pages/Dashboard/CreatorDashboard/EditContest";
+import ContestSubmissions from "../pages/Dashboard/CreatorDashboard/ContestSubmissions";
+import Profile from "../pages/Dashboard/UserDashboard/Profile";
+
 
 export const router = createBrowserRouter([
   {
@@ -48,11 +54,35 @@ export const router = createBrowserRouter([
       },
       {
         path: "creator",
-        Component: CreatorDashboard
+        Component: CreatorDashboard,
+        children: [
+          {
+            path: "add-contest",
+            element: <AddContest />,
+          },
+          {
+            path: "my-contests",
+            element: <MyContests />,
+          },
+          {
+            path: "edit-contest/:id",
+            element: <EditContest />,
+            loader: ({ params }) =>
+              fetch(`${import.meta.env.VITE_API_URL}/contest/${params.id}`),
+          },
+          {
+            path: "submissions/:id",
+            element: <ContestSubmissions />,
+          },
+        ],
       },
       {
         path: "user",
         Component: UserDashboard
+      },
+      {
+        path: "profile", 
+        element: <Profile />,
       },
     ]
   }

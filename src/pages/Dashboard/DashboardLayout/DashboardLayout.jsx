@@ -1,8 +1,15 @@
 import React from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
+import Navbar from '../../../Components/Navbar/Navbar'
+import Footer from '../../../Components/Footer/Footer'
+
+
 
 const DashboardLayout = () => {
   return (
+
+    <>
+    <Navbar></Navbar>
     <div className="flex min-h-screen">
 
       {/* Sidebar */}
@@ -20,6 +27,11 @@ const DashboardLayout = () => {
       </main>
 
     </div>
+
+    <Footer></Footer>
+    </>
+    
+    
   )
 }
 
