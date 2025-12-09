@@ -7,9 +7,9 @@ const Navbar = () => {
   const { user, logOut, } = useAuth();
 
   const links = <>
-    <li><NavLink to='/'>Home</NavLink></li>
-    <li><NavLink to='/allContests'>AllContests</NavLink></li>
-    <li><NavLink to='/extra-section'>Extra Section</NavLink></li>
+    <li><NavLink className="font-semibold" to='/'>Home</NavLink></li>
+    <li><NavLink className="font-semibold" to='/allContests'>AllContests</NavLink></li>
+    <li><NavLink className="font-semibold" to='/extra-section'>Extra Section</NavLink></li>
   </>
 
   const handleLogout = () => {

@@ -32,22 +32,47 @@ const Profile = () => {
     }
   }, [profile, user, reset]);
 
-  const onSubmit = async (data) => {
-    const updatedData = {
-      name: data.name.trim(),
-      photoURL: data.photoURL.trim() || null,
-      bio: data.bio.trim(),
-    };
+  // const onSubmit = async (data) => {
+  //   const updatedData = {
+  //     name: data.name.trim(),
+  //     photoURL: data.photoURL.trim() || null,
+  //     bio: data.bio.trim(),
+  //   };
 
+  //   try {
+  //     await axiosSecure.patch(`/users/${user?.email}`, updatedData);
+  //     toast.success("Profile updated successfully!");
+  //     queryClient.invalidateQueries(["profile", user?.email]);
+  //   } catch (err) {
+  //     toast.error("Failed to update profile");
+  //     console.error(err);
+  //   }
+  // };
+
+
+
+  const onSubmit = async (data) => {
     try {
-      await axiosSecure.patch(`/users/${user?.email}`, updatedData);
-      toast.success("Profile updated successfully!");
-      queryClient.invalidateQueries(["profile", user?.email]);
+      const updatedData = {
+        name: data.name.trim() || user?.displayName,
+        photoURL: data.photoURL.trim() || user?.photoURL || "",
+        bio: data.bio.trim() || "",
+      };
+
+      const res = await axiosSecure.patch(`/users/${user?.email}`, updatedData);
+
+      if (res.data.success) {
+        toast.success("Profile updated successfully!");
+        queryClient.invalidateQueries(["profile", user?.email]);
+      } else {
+        toast.error("Profile update failed or no changes made");
+      }
     } catch (err) {
-      toast.error("Failed to update profile");
-      console.error(err);
+      console.error("Profile update error:", err);
+      toast.error("Failed to update profile. Try again!");
     }
   };
+
 
   // Mock stats - replace with real data from backend if available
   const totalParticipated = profile.participated || 24;
