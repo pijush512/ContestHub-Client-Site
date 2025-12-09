@@ -16,6 +16,7 @@ import EditContest from "../pages/Dashboard/CreatorDashboard/EditContest";
 import ContestSubmissions from "../pages/Dashboard/CreatorDashboard/ContestSubmissions";
 import Profile from "../pages/Dashboard/UserDashboard/Profile";
 import ContestDetails from "../pages/ContestDetails";
+import ExtraSection from "../pages/ExtraSection";
 
 
 export const router = createBrowserRouter([
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: 'allContests',
         Component: AllContests
+      },
+      {
+        path: 'extra-section',
+        Component: ExtraSection
       },
       {
         path: 'contest/:id',

@@ -59,7 +59,6 @@ const Home = () => {
       <Banner onSearch={handleSearch} />
 
       <PopularContests contests={contests} user={user} />
-
       <WinnersSection />
       <ExtraSection />
     </div>
