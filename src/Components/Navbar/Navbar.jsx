@@ -40,7 +40,7 @@ const Navbar = () => {
           </div>
           <Link to='/' className='w-10 h-10 flex items-center gap-4'>
             <img src="https://i.ibb.co.com/Vchp0YVj/image-jpg-removebg-preview-1.png" alt="" />
-            <a className="text-xl font-bold hidden md:block">ContestHub</a>
+            <span className="text-xl font-bold hidden md:block">ContestHub</span>
           </Link>
         </div>
         <div className="navbar-center hidden lg:flex">
