@@ -15,6 +15,7 @@ import MyContests from "../pages/Dashboard/CreatorDashboard/MyContests";
 import EditContest from "../pages/Dashboard/CreatorDashboard/EditContest";
 import ContestSubmissions from "../pages/Dashboard/CreatorDashboard/ContestSubmissions";
 import Profile from "../pages/Dashboard/UserDashboard/Profile";
+import ContestDetails from "../pages/ContestDetails";
 
 
 export const router = createBrowserRouter([
@@ -31,6 +32,12 @@ export const router = createBrowserRouter([
       {
         path: 'allContests',
         Component: AllContests
+      },
+      {
+        path: 'contest/:id',
+        element: <PrivateRoute>
+          <ContestDetails></ContestDetails>
+        </PrivateRoute>
       },
       {
         path: '/login',
