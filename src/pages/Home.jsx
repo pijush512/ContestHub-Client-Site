@@ -1,43 +1,69 @@
-import React from 'react'
-import Banner from '../Components/Banner/Banner'
-import PopularContests from '../Components/PopularContests/PopularContests'
-import WinnersSection from '../Components/WinnersSection/WinnersSection'
-import ExtraSection from '../Components/ExtraSection/ExtraSection'
-import useAxiosSecure from '../hooks/useAxiosSecure'
-import { useQuery } from '@tanstack/react-query'
-import useAuth from '../hooks/useAuth'
+import React, { useState, useEffect } from "react";
+import Banner from "../Components/Banner/Banner";
+import PopularContests from "../Components/PopularContests/PopularContests";
+import WinnersSection from "../Components/WinnersSection/WinnersSection";
+import ExtraSection from "../Components/ExtraSection/ExtraSection";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+import useAuth from "../hooks/useAuth";
 
 const Home = () => {
+  const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
 
-   const axiosSecure = useAxiosSecure();
-   const { user } = useAuth();
+  // Contest list state
+  const [contests, setContests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-const { data: contests = [], isLoading } = useQuery({
-  queryKey: ["popularContests"],
-  queryFn: async () => {
-    try {
-      const res = await axiosSecure.get("/contest/popular");
-      return res.data;
-    } catch (err) {
-      console.error("Error fetching popular contests:", err);
-      return [];
-    }
-  },
-});
+  // Load popular contests first time
+  useEffect(() => {
+    const fetchPopular = async () => {
+      try {
+        const res = await axiosSecure.get("/contest/popular");
+        setContests(res.data);
+      } catch (err) {
+        console.log("Error loading popular contests:", err);
+        setContests([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
+    fetchPopular();
+  }, []);
+
+  // Search function (simple)
+  const handleSearch = (query) => {
+    setIsLoading(true);
+
+    axiosSecure
+      .get(`/contest/search/${query}`)
+      .then((res) => {
+        setContests(res.data);
+      })
+      .catch((err) => {
+        console.log("Search error:", err);
+        setContests([]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   if (isLoading) {
-    return <div className="text-center py-20">Loading popular contests...</div>;
+    return <div className="text-center py-20">Loading contests...</div>;
   }
 
   return (
-    <div className='w-11/12 mx-auto'>
-      <Banner></Banner>
-      <PopularContests contests={contests} user={user}></PopularContests>
-      <WinnersSection></WinnersSection>
-      <ExtraSection></ExtraSection>
-    </div>
-  )
-}
+    <div className="w-11/12 mx-auto">
+      {/* Send search handler to Banner */}
+      <Banner onSearch={handleSearch} />
 
-export default Home
+      <PopularContests contests={contests} user={user} />
+
+      <WinnersSection />
+      <ExtraSection />
+    </div>
+  );
+};
+
+export default Home;
