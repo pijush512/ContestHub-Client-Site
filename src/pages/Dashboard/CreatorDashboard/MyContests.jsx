@@ -1,5 +1,5 @@
 // src/pages/dashboard/creator/MyContests.jsx
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import { Link } from "react-router-dom";
@@ -8,9 +8,11 @@ import toast from "react-hot-toast";
 const MyContests = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
 
-  const { data: contests = [], refetch } = useQuery({
+  const { data: contests = [] } = useQuery({
     queryKey: ["my-contests", user?.email],
+    enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/contest/creator/${user?.email}`);
       return res.data;
@@ -22,7 +24,9 @@ const MyContests = () => {
     try {
       await axiosSecure.delete(`/contest/${id}`);
       toast.success("Contest deleted");
-      refetch();
+      queryClient.invalidateQueries(["my-contests", user?.email]);
+      queryClient.invalidateQueries(["contests"]);
+      queryClient.invalidateQueries(["popular"]);
     } catch {
       toast.error("Failed");
     }

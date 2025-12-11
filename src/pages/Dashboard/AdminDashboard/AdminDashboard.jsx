@@ -43,6 +43,9 @@ const AdminDashboard = () => {
       if (action === "confirm") {
         await axiosSecure.patch(`/contest/${id}`, { status: "approved" });
         toast.success("Contest approved!");
+      } else if (action === "reject") {
+        await axiosSecure.patch(`/contest/${id}`, { status: "rejected" });
+        toast.success("Contest rejected!");
       } else if (action === "delete") {
         await axiosSecure.delete(`/contest/${id}`);
         toast.success("Contest deleted!");
@@ -122,7 +125,19 @@ const AdminDashboard = () => {
                   <td>{contest.title}</td>
                   <td>{contest.creatorEmail}</td>
                   <td>{contest.participants || 0}</td>
-                  <td>{contest.status || "pending"}</td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        contest.status === "approved"
+                          ? "badge-success"
+                          : contest.status === "rejected"
+                          ? "badge-error"
+                          : "badge-warning"
+                      }`}
+                    >
+                      {contest.status || "pending"}
+                    </span>
+                  </td>
                   <td className="space-x-2">
                     <button
                       className="btn btn-xs btn-success"
@@ -132,6 +147,15 @@ const AdminDashboard = () => {
                       disabled={contest.status === "approved"}
                     >
                       Confirm
+                    </button>
+                    <button
+                      className="btn btn-xs btn-warning"
+                      onClick={() =>
+                        handleContestAction(contest._id, "reject")
+                      }
+                      disabled={contest.status === "rejected"}
+                    >
+                      Reject
                     </button>
                     <button
                       className="btn btn-xs btn-error"

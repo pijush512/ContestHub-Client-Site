@@ -1,3 +1,51 @@
+# ContestHub 🎉
+
+ContestHub is a modern, user-friendly web application for managing creative contests. Users can create, discover, participate in, and manage contests like design challenges, article writing competitions, business ideas, and more. The platform also supports Firebase authentication and secure participation management.
+
+---
+
+## Table of Contents
+- [Features](#features)
+- [Technologies](#technologies)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
+- [Folder Structure](#folder-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Features ✨
+- User registration & login (Email/Password & Google Sign-In)
+- Contest creation & management
+- Participate in contests
+- Submit contest tasks
+- Countdown timer for contest deadlines
+- View contest winners
+- Secure participation with Firebase token verification
+- Responsive UI for desktop & mobile
+
+---
+
+## Technologies 🛠️
+- Frontend:
+  - React.js
+  - React Router
+  - React Hook Form
+  - Tailwind CSS / DaisyUI
+- Backend:
+  - Node.js
+  - Express.js
+  - MongoDB & Mongoose
+- Authentication:
+  - Firebase Authentication
+- Others:
+  - Axios for API calls
+  - Dotenv for environment variables
+
+
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

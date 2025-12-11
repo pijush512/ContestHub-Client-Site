@@ -6,10 +6,13 @@ import { useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const AddContest = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
+
   const [deadline, setDeadline] = useState(new Date());
   const { register, handleSubmit, reset } = useForm();
 
@@ -36,9 +39,14 @@ const AddContest = () => {
       toast.success("Contest submitted for approval!");
       reset();
       setDeadline(new Date());
+
+      // invalidate queries
+      queryClient.invalidateQueries(["my-contests", user?.email]);
+      queryClient.invalidateQueries(["contests"]);
+      queryClient.invalidateQueries(["popular"]);
     } catch (err) {
       toast.error("Failed to create contest");
-      console.log(err)
+      console.log(err);
     }
   };
 
@@ -59,10 +67,8 @@ const AddContest = () => {
         <input type="number" {...register("price", { required: true })} className="input input-bordered" placeholder="Entry Fee ($)" />
         <input type="number" {...register("prize", { required: true })} className="input input-bordered" placeholder="Prize Money ($)" />
         <DatePicker selected={deadline} onChange={setDeadline} showTimeSelect dateFormat="Pp" className="input input-bordered w-full" />
-
         <textarea {...register("taskInstruction", { required: true })} rows="4" className="textarea textarea-bordered md:col-span-2" placeholder="Task Instruction"></textarea>
         <textarea {...register("description", { required: true })} rows="6" className="textarea textarea-bordered md:col-span-2" placeholder="Full Description"></textarea>
-
         <button type="submit" className="btn btn-lg btn-primary md:col-span-2">
           Submit for Approval
         </button>

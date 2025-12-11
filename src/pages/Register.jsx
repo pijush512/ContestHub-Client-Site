@@ -30,6 +30,7 @@ const Register = () => {
 
 
 
+
   const handleGoogleSignIn = () => {
     googleSignIn()
       .then(result => {
@@ -40,6 +41,9 @@ const Register = () => {
         console.log(error);
       })
   }
+
+
+
 
   return (
     <div className="hero bg-base-200 min-h-screen">
@@ -104,5 +108,6 @@ const Register = () => {
 }
 
 export default Register
+
 
 

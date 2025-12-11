@@ -16,6 +16,7 @@ const AuthProvider = ({ children }) => {
     return createUserWithEmailAndPassword(auth, email, password)
   };
 
+
   const logInUser = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password)
@@ -66,3 +67,8 @@ const AuthProvider = ({ children }) => {
 }
 
 export default AuthProvider
+
+
+
+
+

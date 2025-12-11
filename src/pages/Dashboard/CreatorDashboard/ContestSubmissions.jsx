@@ -11,6 +11,7 @@ const ContestSubmissions = () => {
 
   const { data: submissions = [], isLoading } = useQuery({
     queryKey: ["submissions", id],
+    enabled: !!id,
     queryFn: async () => {
       const res = await axiosSecure.get(`/submissions/${id}`);
       return res.data;
@@ -18,18 +19,30 @@ const ContestSubmissions = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: (submission) => axiosSecure.patch(`/contest/${id}/winner`, {
-      winnerEmail: submission.userEmail,
-      winnerName: submission.userName,
-      winnerPhoto: submission.userPhoto,
-    }),
+    mutationFn: (submission) =>
+      axiosSecure.patch(`/contest/${id}/winner`, {
+        winnerEmail: submission.userEmail,
+        winnerName: submission.userName,
+        winnerPhoto: submission.userPhoto,
+      }),
     onSuccess: () => {
       toast.success("Winner declared!");
       queryClient.invalidateQueries(["submissions", id]);
+      queryClient.invalidateQueries(["contests"]);
+      queryClient.invalidateQueries(["my-contests"]);
+      queryClient.invalidateQueries(["contest", id]);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "Something went wrong!");
     },
   });
 
-  if (isLoading) return <div className="text-center py-20"><span className="loading loading-spinner loading-lg"></span></div>;
+  if (isLoading)
+    return (
+      <div className="text-center py-20">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -42,19 +55,38 @@ const ContestSubmissions = () => {
           <div key={s._id} className="card bg-base-100 shadow-xl border">
             <div className="card-body">
               <div className="flex items-center gap-4">
-                <img src={s.userPhoto || "https://i.imgur.com/0X8vV5g.png"} className="w-16 h-16 rounded-full" />
+                <img
+                  src={s.userPhoto || "https://i.imgur.com/0X8vV5g.png"}
+                  alt={s.userName}
+                  className="w-16 h-16 rounded-full"
+                />
                 <div>
                   <h3 className="font-bold">{s.userName}</h3>
                   <p className="text-sm text-gray-600">{s.userEmail}</p>
                 </div>
               </div>
-              <p className="mt-4 bg-gray-100 p-4 rounded">{s.taskLink || s.taskText}</p>
+
+              <p className="mt-4 bg-gray-100 p-4 rounded break-words">
+                {s.taskLink ? (
+                  <a
+                    href={s.taskLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    View Submission
+                  </a>
+                ) : (
+                  s.taskText
+                )}
+              </p>
+
               <button
                 onClick={() => mutation.mutate(s)}
-                disabled={mutation.isLoading}
-                className="btn btn-success btn-sm mt-4"
+                disabled={mutation.isLoading || s.isWinner}
+                className={`btn btn-success btn-sm mt-4 ${s.isWinner ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                Declare Winner
+                {s.isWinner ? "Winner" : mutation.isLoading ? "Declaring..." : "Declare Winner"}
               </button>
             </div>
           </div>

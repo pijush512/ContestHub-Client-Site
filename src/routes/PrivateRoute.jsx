@@ -1,7 +1,7 @@
 import React from 'react'
 import useAuth from '../hooks/useAuth'
 import Loader from '../Components/Loader/Loader'
-import { Navigate } from 'react-router';
+import { Navigate, } from 'react-router';
 
 
 const PrivateRoute = ({children}) => {
@@ -12,11 +12,14 @@ const PrivateRoute = ({children}) => {
   if(loading) {
     return <Loader></Loader>
   }
-if(!user){
-  return <Navigate to='/login'></Navigate>
-}
+
+  if(!user){
+   return <Navigate to='/'></Navigate>
+  }
 
   return children;
 }
 
 export default PrivateRoute
+
+
