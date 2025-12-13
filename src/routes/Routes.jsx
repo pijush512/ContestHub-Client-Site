@@ -3,8 +3,6 @@ import HomeLayout from "../Layout/HomeLayout/HomeLayout";
 import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
 import AllContests from "../pages/AllContests";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
 import PrivateRoute from "../routes/PrivateRoute"
 import DashboardLayout from "../pages/Dashboard/DashboardLayout/DashboardLayout";
 import AdminDashboard from "../pages/Dashboard/AdminDashboard/AdminDashboard";
@@ -16,7 +14,11 @@ import EditContest from "../pages/Dashboard/CreatorDashboard/EditContest";
 import ContestSubmissions from "../pages/Dashboard/CreatorDashboard/ContestSubmissions";
 import Profile from "../pages/Dashboard/UserDashboard/Profile";
 import ContestDetails from "../pages/ContestDetails";
-import ExtraSection from "../pages/ExtraSection";
+import Login from "../pages/Login"
+import Register from "../pages/Register"
+import Payment from "../pages/Dashboard/Payment/Payment";
+import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
+import PaymentCanceled from "../pages/Dashboard/Payment/PaymentCanceled";
 
 
 export const router = createBrowserRouter([
@@ -35,8 +37,12 @@ export const router = createBrowserRouter([
         Component: AllContests
       },
       {
-        path: 'extra-section',
-        Component: ExtraSection
+        path: '/login',
+        Component: Login,
+      },
+      {
+        path: '/register',
+        Component: Register,
       },
       {
         path: 'contest/:id',
@@ -44,14 +50,6 @@ export const router = createBrowserRouter([
           <ContestDetails></ContestDetails>
         </PrivateRoute>
       },
-      {
-        path: '/login',
-        Component: Login,
-      },
-      {
-        path: '/register',
-        Component: Register,
-      }
     ]
   },
   {
@@ -89,11 +87,23 @@ export const router = createBrowserRouter([
         ],
       },
       {
+        path: "payment/:contestId",
+        element: <Payment></Payment>
+      },
+      {
+        path: "payment-success",
+        Component: PaymentSuccess,
+      },
+      {
+        path: "payment-cancelled",
+        Component: PaymentCanceled,
+      },
+      {
         path: "user",
         Component: UserDashboard
       },
       {
-        path: "profile", 
+        path: "profile",
         element: <Profile />,
       },
     ]

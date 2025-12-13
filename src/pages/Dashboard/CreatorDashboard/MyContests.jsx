@@ -1,79 +1,134 @@
-// src/pages/dashboard/creator/MyContests.jsx
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {} from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
-import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+import { useQuery } from "@tanstack/react-query";
+
 
 const MyContests = () => {
-  const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
-  const { data: contests = [] } = useQuery({
-    queryKey: ["my-contests", user?.email],
-    enabled: !!user?.email,
+  const { data: contests = [], isLoading, refetch } = useQuery({
+    queryKey: ["mycontest", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/contest/creator/${user?.email}`);
-      return res.data;
-    },
+      return res.data
+    }
   });
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this contest?")) return;
-    try {
-      await axiosSecure.delete(`/contest/${id}`);
-      toast.success("Contest deleted");
-      queryClient.invalidateQueries(["my-contests", user?.email]);
-      queryClient.invalidateQueries(["contests"]);
-      queryClient.invalidateQueries(["popular"]);
-    } catch {
-      toast.error("Failed");
-    }
-  };
+  if (isLoading) {
+    return <div className="text-center mt-12 text-blue-500">Contests Loading...</div>;
+  }
+
+
+  const handleContestDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        axiosSecure.delete(`/contest/${id}`)
+          .then((res) => {
+            if (res.data.deletedCount) {
+              refetch();
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your contest has been deleted.",
+                icon: "success"
+              });
+            }
+          })
+
+
+      }
+    });
+  }
+
+
 
   return (
-    <div className="bg-white rounded-2xl shadow-2xl p-8">
-      <h2 className="text-3xl font-bold mb-8 text-purple-700">My Created Contests ({contests.length})</h2>
-      <div className="overflow-x-auto">
-        <table className="table table-zebra w-full">
-          <thead>
-            <tr className="bg-purple-100">
-              <th>#</th>
-              <th>Image</th>
-              <th>Title</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Prize</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {contests.map((c, i) => (
-              <tr key={c._id}>
-                <td>{i + 1}</td>
-                <td><img src={c.image} className="w-16 h-16 object-cover rounded" /></td>
-                <td className="font-semibold">{c.title}</td>
-                <td><span className="badge badge-info">{c.type}</span></td>
-                <td><span className={`badge ${c.status === "confirmed" ? "badge-success" : "badge-warning"}`}>{c.status}</span></td>
-                <td className="font-bold text-green-600">${c.prize}</td>
-                <td className="space-x-2">
-                  {c.status === "pending" && (
-                    <>
-                      <Link to={`/dashboard/creator/edit-contest/${c._id}`} className="btn btn-sm btn-warning">Edit</Link>
-                      <button onClick={() => handleDelete(c._id)} className="btn btn-sm btn-error">Delete</button>
-                    </>
-                  )}
-                  <Link to={`/dashboard/creator/submissions/${c._id}`} className="btn btn-sm btn-accent">
-                    Submissions
-                  </Link>
-                </td>
+    <div className="max-w-6xl mx-auto mt-12 px-4">
+      <h2 className="text-3xl font-bold mb-8 text-gray-800 text-center">
+        My Created Contests
+      </h2>
+
+      {contests.length === 0 ? (
+        <p className="text-center text-gray-500">No contests created yet.</p>
+      ) : (
+
+        <div className="overflow-x-auto shadow-lg rounded-lg ">
+          <p className="text-center text-5xl">Total Contest: {contests.length}</p>
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="py-3 px-6 font-medium text-gray-700">
+                  Contest Name
+                </th>
+                <th className="py-3 px-6 font-medium text-gray-700">Type</th>
+                <th className="py-3 px-6 font-medium text-gray-700">Status</th>
+                <th className="py-3 px-6 font-medium text-gray-700">
+                  Deadline
+                </th>
+                <th className="py-3 px-6 font-medium text-gray-700">Prize</th>
+                <th className="py-3 px-6 font-medium text-gray-700">
+                  Actions
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {contests.map((contest) => (
+                <tr key={contest._id} className="border-b">
+                  <td className="py-3 px-6 font-bold">{contest.name}</td>
+                  <td className="py-3 px-6 font-semibold">{contest.type}</td>
+                  <td className="py-3 px-6 capitalize">{contest.status}</td>
+                  <td className="py-3 px-6">
+                    {new Date(contest.deadline).toLocaleDateString()}
+                  </td>
+                  <td className="py-3 px-6">{contest.prize}</td>
+                  <td className="py-3 px-6 space-x-2">
+                    {/* Edit only if pending */}
+                    {contest.status === "pending" && (
+                      <>
+                        <button
+                          onClick={() =>
+                            navigate(`/dashboard/creator/edit-contest/${contest._id}`)
+                          }
+                          className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleContestDelete(contest._id)}
+                          className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
+                    <button
+                      onClick={() =>
+                        navigate(`/dashboard/creator/submissions/${contest._id}`)
+                      }
+                      className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded"
+                    >
+                      See Submissions
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
+
   );
 };
 

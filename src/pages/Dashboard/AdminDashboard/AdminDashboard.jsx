@@ -1,167 +1,150 @@
-// src/pages/Dashboard/AdminDashboard/AdminDashboard.jsx
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import toast from "react-hot-toast";
+
 
 const AdminDashboard = () => {
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
 
-  // Users fetch
-  const { data: users = [], isLoading: usersLoading } = useQuery({
-    queryKey: ["users"],
+  // Fetch all users
+  const { data: users = [], refetch: refetchUsers } = useQuery({
+    queryKey: ["adminUsers"],
     queryFn: async () => {
       const res = await axiosSecure.get("/users");
       return res.data;
     },
   });
 
-  // Contests fetch
-  const { data: contests = [], isLoading: contestsLoading } = useQuery({
-    queryKey: ["contests"],
+  // Fetch all contests
+  const { data: contests = [], refetch: refetchContests } = useQuery({
+    queryKey: ["adminContests"],
     queryFn: async () => {
       const res = await axiosSecure.get("/contest");
       return res.data;
     },
   });
 
-  // Change user role
-  const handleRoleChange = async (email, newRole) => {
+  // Handle user role change
+  const handleRoleChange = async (userEmail, newRole) => {
     try {
-      await axiosSecure.patch(`/users/${email}`, { role: newRole });
-      toast.success(`Role updated to ${newRole}`);
-      queryClient.invalidateQueries(["users"]);
+      await axiosSecure.patch(`/users/${userEmail}`, { role: newRole });
+      refetchUsers();
+      alert(`User role updated to ${newRole}`);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to update role");
+      alert("Failed to update role");
     }
   };
 
-  // Contest actions
-  const handleContestAction = async (id, action) => {
+  // Handle contest actions
+  const handleContestAction = async (contestId, action) => {
     try {
-      if (action === "confirm") {
-        await axiosSecure.patch(`/contest/${id}`, { status: "approved" });
-        toast.success("Contest approved!");
+      if (action === "delete") {
+        await axiosSecure.delete(`/contest/${contestId}`);
+      } else if (action === "approve") {
+        await axiosSecure.patch(`/contest/${contestId}`, { approved: true });
       } else if (action === "reject") {
-        await axiosSecure.patch(`/contest/${id}`, { status: "rejected" });
-        toast.success("Contest rejected!");
-      } else if (action === "delete") {
-        await axiosSecure.delete(`/contest/${id}`);
-        toast.success("Contest deleted!");
+        await axiosSecure.patch(`/contest/${contestId}`, { approved: false });
       }
-      queryClient.invalidateQueries(["contests"]);
+      refetchContests();
+      alert(`Contest ${action}d successfully`);
     } catch (err) {
       console.error(err);
-      toast.error("Action failed");
+      alert("Failed to update contest");
     }
   };
-
-  if (usersLoading || contestsLoading)
-    return <div className="text-center py-20">Loading...</div>;
 
   return (
-    <div className="p-8 space-y-12">
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6 text-center">Admin Dashboard</h1>
+
       {/* Users Table */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Manage Users</h2>
+      <section className="mb-10">
+        <h2 className="text-2xl font-semibold mb-4">Manage Users</h2>
         <div className="overflow-x-auto">
-          <table className="table w-full border border-gray-200">
-            <thead>
-              <tr className="bg-gray-100">
-                <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Change Role</th>
+          <table className="table-auto w-full border border-gray-300">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-2 border">Name</th>
+                <th className="px-4 py-2 border">Email</th>
+                <th className="px-4 py-2 border">Role</th>
+                <th className="px-4 py-2 border">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {users.map((user, idx) => (
-                <tr key={user._id} className="hover:bg-gray-50">
-                  <td>{idx + 1}</td>
-                  <td>{user.name || "N/A"}</td>
-                  <td>{user.email}</td>
-                  <td>{user.role || "User"}</td>
-                  <td className="space-x-2">
-                    {["User", "Creator", "Admin"].map((role) => (
-                      <button
-                        key={role}
-                        className={`btn btn-xs ${
-                          user.role === role ? "btn-disabled" : "btn-primary"
-                        }`}
-                        onClick={() => handleRoleChange(user.email, role)}
-                      >
-                        {role}
-                      </button>
-                    ))}
+              {users.map((user) => (
+                <tr key={user._id}>
+                  <td className="px-4 py-2 border">{user.name}</td>
+                  <td className="px-4 py-2 border">{user.email}</td>
+                  <td className="px-4 py-2 border">{user.role || "user"}</td>
+                  <td className="px-4 py-2 border space-x-2">
+                    <button
+                      onClick={() => handleRoleChange(user.email, "user")}
+                      className="px-2 py-1 bg-gray-300 rounded"
+                    >
+                      User
+                    </button>
+                    <button
+                      onClick={() => handleRoleChange(user.email, "creator")}
+                      className="px-2 py-1 bg-blue-500 text-white rounded"
+                    >
+                      Creator
+                    </button>
+                    <button
+                      onClick={() => handleRoleChange(user.email, "admin")}
+                      className="px-2 py-1 bg-green-500 text-white rounded"
+                    >
+                      Admin
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
 
       {/* Contests Table */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Manage Contests</h2>
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Manage Contests</h2>
         <div className="overflow-x-auto">
-          <table className="table w-full border border-gray-200">
-            <thead>
-              <tr className="bg-gray-100">
-                <th>#</th>
-                <th>Title</th>
-                <th>Creator</th>
-                <th>Participants</th>
-                <th>Status</th>
-                <th>Actions</th>
+          <table className="table-auto w-full border border-gray-300">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-2 border">Title</th>
+                <th className="px-4 py-2 border">Creator Email</th>
+                <th className="px-4 py-2 border">Status</th>
+                <th className="px-4 py-2 border">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {contests.map((contest, idx) => (
-                <tr key={contest._id} className="hover:bg-gray-50">
-                  <td>{idx + 1}</td>
-                  <td>{contest.title}</td>
-                  <td>{contest.creatorEmail}</td>
-                  <td>{contest.participants || 0}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        contest.status === "approved"
-                          ? "badge-success"
-                          : contest.status === "rejected"
-                          ? "badge-error"
-                          : "badge-warning"
-                      }`}
-                    >
-                      {contest.status || "pending"}
-                    </span>
+              {contests.map((c) => (
+                <tr key={c._id}>
+                  <td className="px-4 py-2 border">{c.name}</td>
+                  <td className="px-4 py-2 border">{c.creatorEmail}</td>
+                  <td className="px-4 py-2 border">
+                    {c.approved ? "Approved" : "Pending"}
                   </td>
-                  <td className="space-x-2">
+                  <td className="px-4 py-2 border space-x-2">
+                    {!c.approved && (
+                      <button
+                        onClick={() => handleContestAction(c._id, "approve")}
+                        className="px-2 py-1 bg-green-500 text-white rounded"
+                      >
+                        Approve
+                      </button>
+                    )}
+                    {!c.approved && (
+                      <button
+                        onClick={() => handleContestAction(c._id, "reject")}
+                        className="px-2 py-1 bg-red-500 text-white rounded"
+                      >
+                        Reject
+                      </button>
+                    )}
                     <button
-                      className="btn btn-xs btn-success"
-                      onClick={() =>
-                        handleContestAction(contest._id, "confirm")
-                      }
-                      disabled={contest.status === "approved"}
-                    >
-                      Confirm
-                    </button>
-                    <button
-                      className="btn btn-xs btn-warning"
-                      onClick={() =>
-                        handleContestAction(contest._id, "reject")
-                      }
-                      disabled={contest.status === "rejected"}
-                    >
-                      Reject
-                    </button>
-                    <button
-                      className="btn btn-xs btn-error"
-                      onClick={() =>
-                        handleContestAction(contest._id, "delete")
-                      }
+                      onClick={() => handleContestAction(c._id, "delete")}
+                      className="px-2 py-1 bg-gray-700 text-white rounded"
                     >
                       Delete
                     </button>
@@ -171,9 +154,10 @@ const AdminDashboard = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
 
 export default AdminDashboard;
+
