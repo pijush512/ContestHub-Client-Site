@@ -5,6 +5,7 @@ import useAuth from '../hooks/useAuth'
 import { updateProfile } from 'firebase/auth'
 import useAxiosSecure from '../hooks/useAxiosSecure'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 
 const Register = () => {
@@ -40,23 +41,33 @@ const Register = () => {
 
       const res = await axiosSecure.post('/users', userInfo);
       if (res.data.insertedId) {
-        console.log('user created in the database');
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Registration Successful!",
+          showConfirmButton: false,
+          timer: 1500
+        });
       }
 
       navigate(location.state || '/');
     } catch (error) {
-      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
     }
   };
-
-
-
-
 
   const handleGoogleSignIn = () => {
     googleSignIn()
       .then(result => {
-        console.log(result.user);
+        Swal.fire({
+          title: "Logged In!",
+          text: "Successfully signed in with Google.",
+          icon: "success"
+        });
         navigate(location.state || '/');
 
         // save in DB
@@ -65,7 +76,7 @@ const Register = () => {
           displayName: result.user.displayName,
           photoURL: result.user.photoURL,
         }
-        
+
         axios.post('http://localhost:3000/users', userInfo)
           .then(res => {
             console.log('user data has been strod', res.data)
@@ -73,7 +84,11 @@ const Register = () => {
 
       })
       .catch(error => {
-        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: error.message,
+        });
       })
   }
 

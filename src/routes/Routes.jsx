@@ -6,8 +6,6 @@ import AllContests from "../pages/AllContests";
 import PrivateRoute from "../routes/PrivateRoute"
 import DashboardLayout from "../pages/Dashboard/DashboardLayout/DashboardLayout";
 import AdminDashboard from "../pages/Dashboard/AdminDashboard/AdminDashboard";
-import CreatorDashboard from "../pages/Dashboard/CreatorDashboard/CreatorDashboard";
-import UserDashboard from "../pages/Dashboard/UserDashboard/UserDashboard";
 import AddContest from "../pages/Dashboard/CreatorDashboard/AddContest";
 import MyContests from "../pages/Dashboard/CreatorDashboard/MyContests";
 import EditContest from "../pages/Dashboard/CreatorDashboard/EditContest";
@@ -21,6 +19,12 @@ import PaymentCanceled from "../pages/Dashboard/Payment/PaymentCanceled";
 import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 import ExtraSection from "../pages/ExtraSection";
 import SubmissionDetails from "../pages/Dashboard/CreatorDashboard/SubmissionDetails";
+import MyParticipate from "../pages/Dashboard/UserDashboard/MyParticipate";
+import MyWinning from "../pages/Dashboard/UserDashboard/MyWinning";
+import ManageUsers from "../pages/Dashboard/AdminDashboard/ManageUsers";
+import ManageContests from "../pages/Dashboard/AdminDashboard/ManageContests";
+import SubmittedTasks from "../pages/Dashboard/CreatorDashboard/SubmittedTasks";
+
 
 
 export const router = createBrowserRouter([
@@ -66,19 +70,32 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "admin",
-        Component: AdminDashboard
+        children: [
+          {
+            path: "manage-users",
+            element: <ManageUsers />,
+          },
+          {
+            path: "manage-contests",
+            element: <ManageContests />,
+          },
+        ],
       },
       {
         path: "creator",
-        Component: CreatorDashboard,
         children: [
+          {
+            path: "my-contests",
+            // index: true,
+            element: <MyContests></MyContests>
+          },
           {
             path: "add-contest",
             element: <AddContest />,
           },
           {
-            path: "my-contests",
-            element: <MyContests />,
+            path: "submitted-tasks",
+            element: <SubmittedTasks></SubmittedTasks>
           },
           {
             path: "edit-contest/:id",
@@ -87,9 +104,9 @@ export const router = createBrowserRouter([
               fetch(`${import.meta.env.VITE_API_URL}/contest/${params.id}`),
           },
           {
-            path: "submissions/:id", 
+            path: "submissions/:id",
             element: <SubmissionDetails />,
-          }
+          },
         ],
       },
       {
@@ -105,11 +122,15 @@ export const router = createBrowserRouter([
         Component: PaymentCanceled,
       },
       {
-        path: "user",
-        Component: UserDashboard
+        path: "my-participated",
+        element: <MyParticipate />
       },
       {
-        path: "profile",
+        path: "my-winning",
+        element: <MyWinning />
+      },
+      {
+        path: "my-profile",
         element: <Profile />,
       },
       {

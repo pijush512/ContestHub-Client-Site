@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 
 const Login = () => {
@@ -15,20 +16,36 @@ const Login = () => {
 
   const handleLogin = (data) => {
     logInUser(data.email, data.password)
-      .then(result => {
-        console.log(result);
+      .then(() => {
+        Swal.fire({
+          title: "Login Successful!",
+          text: "Welcome back to ContestHub",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false
+        });
         navigate(from, { replace: true });
 
       })
       .catch(error => {
-        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.message,
+        });
       });
   }
 
   const handleGoogleSignIn = () => {
     googleSignIn()
       .then(result => {
-        console.log(result.user);
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Google Login Successful",
+          showConfirmButton: false,
+          timer: 1500
+        });
         navigate(location.state || '/');
 
         // save in DB
@@ -45,7 +62,11 @@ const Login = () => {
 
       })
       .catch(error => {
-        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Google Sign-In Failed",
+          text: error.message,
+        });
       })
   }
 
