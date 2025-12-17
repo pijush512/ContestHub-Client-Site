@@ -1,122 +1,124 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 
-
 const AddContest = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-  const userEmail = user?.email;
-  const [formData, setFormData] = useState({
-    name: "",
-    image: "",
-    price: "",
-    prize: "",
-    type: "",
-    description: "",
-    task: "",
-  });
-
   const [deadline, setDeadline] = useState(new Date());
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const { name, image, price, prize, type, description, task } = formData;
-    if (!name || !image || !price || !prize || !type || !description || !task) {
-      Swal.fire("Error", "Please fill all fields!", "error");
+  const onSubmit = async (data) => {
+    if (!deadline) {
+      Swal.fire("Error", "Please select a deadline", "error");
       return;
     }
-    const contestData = { ...formData,
-        creatorEmail: userEmail,
-        status: "pending",
-       deadline: deadline.toISOString()
-       };
+
+    const contestData = {
+      name: data.name,
+      image: data.image,
+      price: Number(data.price),
+      prize: Number(data.prize),
+      type: data.type,
+      description: data.description,
+      task: data.task,
+      deadline: deadline.toISOString(),
+      creatorEmail: user?.email,
+      status: "pending",
+      participantsCount: 0,
+      createdAt: new Date(),
+    };
 
     try {
       const res = await axiosSecure.post("/contest", contestData);
 
-      if (res.status === 200 || res.status === 201) {
+      if (res.data.insertedId || res.status === 201) {
         Swal.fire("Success", "Contest added successfully!", "success");
-        setFormData({ name: "", image: "", price: "", prize: "", type: "", description: "", task: "" });
+        reset();
         setDeadline(new Date());
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
       Swal.fire("Error", "Failed to add contest", "error");
+      console(error)
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-12 p-8 bg-white shadow-lg rounded-lg border border-gray-200">
-      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
+    <div className="max-w-4xl mx-auto mt-12 p-8 bg-white shadow-lg rounded-lg">
+      <h1 className="text-4xl font-bold text-center mb-8">
         Add New Contest
       </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Contest Name */}
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Contest Name</label>
+          <label className="block mb-1 font-medium">Contest Name</label>
           <input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
+            {...register("name", { required: true })}
+            className="w-full p-3 border rounded"
             placeholder="Enter contest name"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          {errors.name && (
+            <p className="text-red-500 text-sm">Contest name is required</p>
+          )}
         </div>
 
         {/* Image */}
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Image URL</label>
+          <label className="block mb-1 font-medium">Image URL</label>
           <input
-            name="image"
-            value={formData.image}
-            onChange={handleChange}
-            placeholder="Contest banner image URL"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {...register("image", { required: true })}
+            className="w-full p-3 border rounded"
+            placeholder="Contest image URL"
           />
+          {errors.image && (
+            <p className="text-red-500 text-sm">Image URL is required</p>
+          )}
         </div>
 
         {/* Price & Prize */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-2 font-medium text-gray-700">Entry Fee</label>
+            <label className="block mb-1 font-medium">Entry Fee</label>
             <input
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
               type="number"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              {...register("price", { required: true, min: 1 })}
+              className="w-full p-3 border rounded"
             />
+            {errors.price && (
+              <p className="text-red-500 text-sm">Valid entry fee required</p>
+            )}
           </div>
+
           <div>
-            <label className="block mb-2 font-medium text-gray-700">Prize Money</label>
+            <label className="block mb-1 font-medium">Prize Money</label>
             <input
-              name="prize"
-              value={formData.prize}
-              onChange={handleChange}
               type="number"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              {...register("prize", { required: true, min: 1 })}
+              className="w-full p-3 border rounded"
             />
+            {errors.prize && (
+              <p className="text-red-500 text-sm">Valid prize amount required</p>
+            )}
           </div>
         </div>
 
         {/* Contest Type */}
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Contest Type</label>
+          <label className="block mb-1 font-medium">Contest Type</label>
           <select
-            name="type"
-            value={formData.type}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {...register("type", { required: true })}
+            className="w-full p-3 border rounded"
           >
             <option value="">Select Type</option>
             <option value="image-design">Image Design</option>
@@ -124,46 +126,52 @@ const AddContest = () => {
             <option value="business-idea">Business Idea</option>
             <option value="gaming-review">Gaming Review</option>
           </select>
+          {errors.type && (
+            <p className="text-red-500 text-sm">Contest type is required</p>
+          )}
         </div>
 
         {/* Description */}
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Description</label>
+          <label className="block mb-1 font-medium">Description</label>
           <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Write contest description"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-28"
+            {...register("description", { required: true })}
+            className="w-full p-3 border rounded h-28"
+            placeholder="Contest description"
           />
+          {errors.description && (
+            <p className="text-red-500 text-sm">Description is required</p>
+          )}
         </div>
 
         {/* Task Instructions */}
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Task Instructions</label>
+          <label className="block mb-1 font-medium">Task Instructions</label>
           <textarea
-            name="task"
-            value={formData.task}
-            onChange={handleChange}
-            placeholder="What participants should do"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-28"
+            {...register("task", { required: true })}
+            className="w-full p-3 border rounded h-28"
+            placeholder="Task instructions"
           />
+          {errors.task && (
+            <p className="text-red-500 text-sm">Task instructions required</p>
+          )}
         </div>
 
         {/* Deadline */}
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Deadline</label>
+          <label className="block mb-1 font-medium">Deadline</label>
           <DatePicker
             selected={deadline}
             onChange={(date) => setDeadline(date)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            minDate={new Date()}
+            className="w-full p-3 border rounded"
           />
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition duration-200"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded font-semibold"
         >
           Add Contest
         </button>

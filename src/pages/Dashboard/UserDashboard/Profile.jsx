@@ -1,4 +1,3 @@
-// src/pages/Dashboard/User/Profile.jsx
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
@@ -11,16 +10,49 @@ const Profile = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
 
-  const { data: profile = {}, isLoading } = useQuery({
+  /* ------------------------------------
+      1) USER PROFILE QUERY
+  -------------------------------------*/
+  const { data: profile = {}, isLoading: isProfileLoading } = useQuery({
     queryKey: ["profile", user?.email],
+    enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/${user?.email}`);
       return res.data;
     },
   });
 
+  /* ------------------------------------
+      2) PARTICIPATED CONTESTS QUERY
+  -------------------------------------*/
+  const { data: participated = [], isLoading: isParticipatedLoading } = useQuery({
+    queryKey: ["participated", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/contest/participated/${user.email}`);
+      return res.data;
+    },
+  });
+
+  /* ------------------------------------
+      3) WON CONTESTS QUERY
+  -------------------------------------*/
+  const { data: won = [], isLoading: isWonLoading } = useQuery({
+    queryKey: ["won", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/contest/won/${user.email}`);
+      return res.data;
+    },
+  });
+
+  // REAL-TIME STATS CALCULATION
+  const totalParticipated = participated.length;
+  const totalWon = won.length;
+  const winPercentage = totalParticipated > 0 ? Math.round((totalWon / totalParticipated) * 100) : 0;
+
   const { register, handleSubmit, reset, watch } = useForm();
-  const photoURL = watch("photoURL"); // Real-time photo preview
+  const photoURL = watch("photoURL"); 
 
   useEffect(() => {
     if (profile) {
@@ -32,25 +64,6 @@ const Profile = () => {
     }
   }, [profile, user, reset]);
 
-  // const onSubmit = async (data) => {
-  //   const updatedData = {
-  //     name: data.name.trim(),
-  //     photoURL: data.photoURL.trim() || null,
-  //     bio: data.bio.trim(),
-  //   };
-
-  //   try {
-  //     await axiosSecure.patch(`/users/${user?.email}`, updatedData);
-  //     toast.success("Profile updated successfully!");
-  //     queryClient.invalidateQueries(["profile", user?.email]);
-  //   } catch (err) {
-  //     toast.error("Failed to update profile");
-  //     console.error(err);
-  //   }
-  // };
-
-
-
   const onSubmit = async (data) => {
     try {
       const updatedData = {
@@ -61,11 +74,10 @@ const Profile = () => {
 
       const res = await axiosSecure.patch(`/users/${user?.email}`, updatedData);
 
-      if (res.data.success) {
+      // Backend response check (Object success or status 200)
+      if (res.data.success || res.status === 200) {
         toast.success("Profile updated successfully!");
         queryClient.invalidateQueries(["profile", user?.email]);
-      } else {
-        toast.error("Profile update failed or no changes made");
       }
     } catch (err) {
       console.error("Profile update error:", err);
@@ -73,13 +85,7 @@ const Profile = () => {
     }
   };
 
-
-  // Mock stats - replace with real data from backend if available
-  const totalParticipated = profile.participated || 24;
-  const totalWon = profile.won || 18;
-  const winPercentage = totalParticipated > 0 ? (totalWon / totalParticipated) * 100 : 0;
-
-  if (isLoading) {
+  if (isProfileLoading || isParticipatedLoading || isWonLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <span className="loading loading-spinner loading-lg text-primary"></span>
@@ -88,9 +94,8 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+    <div className="min-h-screen rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800">My Profile</h1>
           <p className="text-gray-600 mt-2">Manage your personal information and stats</p>
@@ -100,11 +105,10 @@ const Profile = () => {
           {/* Left: Avatar + Stats */}
           <div className="md:col-span-1">
             <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-              {/* Avatar */}
               <div className="avatar mb-6">
                 <div className="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-4 mx-auto">
                   <img
-                    src={photoURL || user?.photoURL || "https://i.ibb.co.com/0j9vL0M/user-avatar.png"}
+                    src={photoURL || profile.photoURL || user?.photoURL || "https://i.ibb.co.com/0j9vL0M/user-avatar.png"}
                     alt="Profile"
                     className="object-cover"
                   />
@@ -112,13 +116,17 @@ const Profile = () => {
               </div>
 
               <h2 className="text-2xl font-bold text-gray-800">{profile.name || user?.displayName}</h2>
-              <p className="text-gray-500">{user?.email}</p>
+              <p className="text-gray-500 mb-4">{user?.email}</p>
+              
+              {profile.bio && <p className="text-sm italic text-gray-600 mb-6">"{profile.bio}"</p>}
 
-              {/* Win Percentage Chart */}
+              {/* Dynamic Win Rate Chart */}
               <div className="mt-8">
                 <div className="text-center">
-                  <div className="radial-progress text-primary" style={{ "--value": winPercentage, "--size": "10rem", "--thickness": "12px" }} role="progressbar">
-                    <span className="text-2xl font-bold">{Math.round(winPercentage)}%</span>
+                  <div className="radial-progress text-primary" 
+                       style={{ "--value": winPercentage, "--size": "10rem", "--thickness": "12px" }} 
+                       role="progressbar">
+                    <span className="text-2xl font-bold">{winPercentage}%</span>
                   </div>
                   <h3 className="text-lg font-semibold mt-4">Win Rate</h3>
                   <p className="text-sm text-gray-600">
@@ -127,7 +135,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              {/* Extra Stats */}
+              {/* Dynamic Stats Cards */}
               <div className="mt-8 grid grid-cols-2 gap-4 text-center">
                 <div className="bg-blue-50 rounded-xl p-4">
                   <p className="text-2xl font-bold text-blue-600">{totalWon}</p>
@@ -147,7 +155,6 @@ const Profile = () => {
               <h3 className="text-2xl font-bold text-gray-800 mb-6">Edit Profile Information</h3>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* Name */}
                 <div>
                   <label className="label">
                     <span className="label-text font-semibold text-gray-700">Full Name</span>
@@ -160,7 +167,6 @@ const Profile = () => {
                   />
                 </div>
 
-                {/* Photo URL */}
                 <div>
                   <label className="label">
                     <span className="label-text font-semibold text-gray-700">Photo URL</span>
@@ -169,27 +175,25 @@ const Profile = () => {
                     {...register("photoURL")}
                     type="text"
                     className="input input-bordered input-primary w-full"
-                    placeholder="https://example.com/your-photo.jpg"
+                    placeholder="https://example.com/photo.jpg"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Paste a direct image link (Imgur, Postimages, etc.)</p>
                 </div>
 
-                {/* Bio */}
                 <div>
                   <label className="label">
                     <span className="label-text font-semibold text-gray-700">Bio</span>
                   </label>
                   <textarea
                     {...register("bio")}
-                    rows={5}
+                    rows={4}
                     className="textarea textarea-bordered textarea-primary w-full"
-                    placeholder="Tell us something about yourself... (e.g., your skills, interests, favorite contest type)"
+                    placeholder="Tell us about yourself..."
                   />
                 </div>
 
-                {/* Submit */}
-                <div className="pt-6">
-                  <button type="submit" className="btn btn-primary btn-lg w-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all">
+                <div className="pt-4">
+                  <button type="submit" 
+                  className="btn btn-lg w-full shadow-xl bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl">
                     Save Changes
                   </button>
                 </div>
@@ -203,5 +207,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-

@@ -11,7 +11,6 @@ import UserDashboard from "../pages/Dashboard/UserDashboard/UserDashboard";
 import AddContest from "../pages/Dashboard/CreatorDashboard/AddContest";
 import MyContests from "../pages/Dashboard/CreatorDashboard/MyContests";
 import EditContest from "../pages/Dashboard/CreatorDashboard/EditContest";
-import ContestSubmissions from "../pages/Dashboard/CreatorDashboard/ContestSubmissions";
 import Profile from "../pages/Dashboard/UserDashboard/Profile";
 import ContestDetails from "../pages/ContestDetails";
 import Login from "../pages/Login"
@@ -19,6 +18,9 @@ import Register from "../pages/Register"
 import Payment from "../pages/Dashboard/Payment/Payment";
 import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
 import PaymentCanceled from "../pages/Dashboard/Payment/PaymentCanceled";
+import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
+import ExtraSection from "../pages/ExtraSection";
+import SubmissionDetails from "../pages/Dashboard/CreatorDashboard/SubmissionDetails";
 
 
 export const router = createBrowserRouter([
@@ -43,6 +45,10 @@ export const router = createBrowserRouter([
       {
         path: '/register',
         Component: Register,
+      },
+      {
+        path: 'extra-section',
+        Component: ExtraSection
       },
       {
         path: 'contest/:id',
@@ -81,9 +87,9 @@ export const router = createBrowserRouter([
               fetch(`${import.meta.env.VITE_API_URL}/contest/${params.id}`),
           },
           {
-            path: "submissions/:id",
-            element: <ContestSubmissions />,
-          },
+            path: "submissions/:id", 
+            element: <SubmissionDetails />,
+          }
         ],
       },
       {
@@ -106,6 +112,10 @@ export const router = createBrowserRouter([
         path: "profile",
         element: <Profile />,
       },
+      {
+        path: "payment-history",
+        Component: PaymentHistory
+      }
     ]
   }
 ]);

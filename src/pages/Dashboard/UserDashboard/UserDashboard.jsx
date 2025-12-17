@@ -87,7 +87,7 @@ const UserDashboard = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         <div className="stat bg-white shadow-xl rounded-2xl border border-purple-200">
           <div className="stat-title text-gray-600">Participated</div>
-          <div className="stat-value text-purple-600">
+          <div className="stat-value text-pink-600">
             {participated.length}
           </div>
         </div>
@@ -97,7 +97,7 @@ const UserDashboard = () => {
         </div>
         <div className="stat bg-white shadow-xl rounded-2xl border border-pink-200">
           <div className="stat-title text-gray-600">Win Rate</div>
-          <div className="stat-value text-pink-600">{winRate}%</div>
+          <div className="stat-value text-purple-600">{winRate}%</div>
         </div>
         <div className="stat bg-white shadow-xl rounded-2xl border border-yellow-200">
           <div className="stat-title text-gray-600">Total Prize</div>
@@ -192,31 +192,20 @@ const UserDashboard = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
             {won.map((contest) => (
-              <div
-                key={contest._id}
-                className="card bg-gradient-to-br from-green-50 to-emerald-100 shadow-xl border-2 border-green-200 transform hover:scale-105 transition"
-              >
-                <figure className="px-8 pt-8">
-                  <img
-                    src={contest.image}
-                    alt={contest.title}
-                    className="rounded-xl h-48 w-full object-cover"
-                  />
-                </figure>
-                <div className="card-body text-center">
-                  <h3 className="card-title text-xl">{contest.title}</h3>
-                  <p className="text-4xl font-bold text-green-600 mt-4">
-                    ${contest.prize}
-                  </p>
-                  <div className="flex justify-center gap-2 mt-4">
-                    <span className="badge badge-success badge-lg">
-                      Winner
-                    </span>
-                    <span className="badge badge-outline badge-success">
-                      Champion
-                    </span>
+              <div key={contest._id} className="card bg-base-100 shadow-xl border-l-4 border-green-500">
+                <figure><img src={contest.image} alt="Contest" /></figure>
+                <div className="card-body">
+                  <h2 className="card-title text-primary">{contest.name}</h2>
+                  <p className="font-bold text-2xl text-success">Prize: ${contest.prize}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="badge badge-secondary">{contest.type}</span>
+                    <span className="badge badge-success text-white font-bold">Winner</span>
                   </div>
+                  <p className="text-sm text-gray-500">
+                    Won on: {contest.winDate ? new Date(contest.winDate).toLocaleDateString() : "Date Pending"}
+                  </p>
                 </div>
               </div>
             ))}

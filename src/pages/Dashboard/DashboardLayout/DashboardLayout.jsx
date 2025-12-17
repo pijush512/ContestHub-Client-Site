@@ -19,6 +19,7 @@ const DashboardLayout = () => {
         <NavLink to="/dashboard/user" className="block">User Dashboard</NavLink>
         <NavLink to="/dashboard/creator" className="block">Creator Dashboard</NavLink>
         <NavLink to="/dashboard/admin" className="block">Admin Dashboard</NavLink>
+        <NavLink to="/dashboard/payment-history" className="block">Payment History</NavLink>
       </aside>
 
       {/* Main Content */}

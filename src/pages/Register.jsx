@@ -1,8 +1,11 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import useAuth from '../hooks/useAuth'
 import { updateProfile } from 'firebase/auth'
+import useAxiosSecure from '../hooks/useAxiosSecure'
+import axios from 'axios'
+
 
 const Register = () => {
 
@@ -10,23 +13,42 @@ const Register = () => {
 
   const { registerUser, googleSignIn } = useAuth();
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
+  const location = useLocation();
 
-  const handleRegister = (data) => {
-    registerUser(data.email, data.password)
-      .then((result) => {
-        updateProfile(result.user, {
-          displayName: data.name,
-          photoURL: data.photo
-        })
-          .catch(error => console.log(error));
-      })
-      .then(() => {
-        navigate('/');
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }
+
+  const handleRegister = async (data) => {
+    try {
+      const result = await registerUser(data.email, data.password);
+
+      // update profile first
+      await updateProfile(result.user, {
+        displayName: data.name,
+        photoURL: data.photo
+      });
+
+      // wait until user is available
+      const token = result.user.stsTokenManager?.accessToken;
+      if (!token) throw new Error("Access token not ready");
+
+      // save in DB
+      const userInfo = {
+        email: data.email,
+        displayName: data.name,
+        photoURL: data.photo,
+      };
+
+      const res = await axiosSecure.post('/users', userInfo);
+      if (res.data.insertedId) {
+        console.log('user created in the database');
+      }
+
+      navigate(location.state || '/');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
 
 
@@ -34,8 +56,21 @@ const Register = () => {
   const handleGoogleSignIn = () => {
     googleSignIn()
       .then(result => {
-        console.log(result);
-        navigate('/');
+        console.log(result.user);
+        navigate(location.state || '/');
+
+        // save in DB
+        const userInfo = {
+          email: result.user.email,
+          displayName: result.user.displayName,
+          photoURL: result.user.photoURL,
+        }
+        
+        axios.post('http://localhost:3000/users', userInfo)
+          .then(res => {
+            console.log('user data has been strod', res.data)
+          })
+
       })
       .catch(error => {
         console.log(error);

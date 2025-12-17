@@ -1,27 +1,25 @@
-import {} from "react";
+import React from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
-
+import { useNavigate } from "react-router-dom";
 
 const MyContests = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
+  // Fetch contests created by logged-in creator
   const { data: contests = [], isLoading, refetch } = useQuery({
     queryKey: ["mycontest", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/contest/creator/${user?.email}`);
-      return res.data
-    }
+      return res.data;
+    },
   });
 
-  if (isLoading) {
-    return <div className="text-center mt-12 text-blue-500">Contests Loading...</div>;
-  }
-
-
+  // Delete contest
   const handleContestDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -30,70 +28,92 @@ const MyContests = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-
-        axiosSecure.delete(`/contest/${id}`)
-          .then((res) => {
-            if (res.data.deletedCount) {
-              refetch();
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your contest has been deleted.",
-                icon: "success"
-              });
-            }
-          })
-
-
+        axiosSecure.delete(`/contest/${id}`).then((res) => {
+          if (res.data.deletedCount) {
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your contest has been deleted.",
+              icon: "success",
+            });
+          }
+        });
       }
     });
-  }
+  };
 
-
+  if (isLoading)
+    return (
+      <div className="text-center mt-12 text-blue-500 text-lg">
+        Contests Loading...
+      </div>
+    );
 
   return (
-    <div className="max-w-6xl mx-auto mt-12 px-4">
-      <h2 className="text-3xl font-bold mb-8 text-gray-800 text-center">
+    <div className="max-w-7xl mx-auto mt-12 px-4">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
         My Created Contests
       </h2>
 
       {contests.length === 0 ? (
-        <p className="text-center text-gray-500">No contests created yet.</p>
+        <p className="text-center text-gray-500 text-lg">
+          You haven't created any contests yet.
+        </p>
       ) : (
-
-        <div className="overflow-x-auto shadow-lg rounded-lg ">
-          <p className="text-center text-5xl">Total Contest: {contests.length}</p>
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="py-3 px-6 font-medium text-gray-700">
+        <div className="overflow-x-auto shadow-lg rounded-lg">
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="py-3 px-6 text-left font-medium text-gray-700">
                   Contest Name
                 </th>
-                <th className="py-3 px-6 font-medium text-gray-700">Type</th>
-                <th className="py-3 px-6 font-medium text-gray-700">Status</th>
-                <th className="py-3 px-6 font-medium text-gray-700">
+                <th className="py-3 px-6 text-left font-medium text-gray-700">
+                  Type
+                </th>
+                <th className="py-3 px-6 text-left font-medium text-gray-700">
+                  Status
+                </th>
+                <th className="py-3 px-6 text-left font-medium text-gray-700">
                   Deadline
                 </th>
-                <th className="py-3 px-6 font-medium text-gray-700">Prize</th>
-                <th className="py-3 px-6 font-medium text-gray-700">
+                <th className="py-3 px-6 text-left font-medium text-gray-700">
+                  Prize
+                </th>
+                <th className="py-3 px-6 text-left font-medium text-gray-700">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody>
               {contests.map((contest) => (
-                <tr key={contest._id} className="border-b">
-                  <td className="py-3 px-6 font-bold">{contest.name}</td>
-                  <td className="py-3 px-6 font-semibold">{contest.type}</td>
-                  <td className="py-3 px-6 capitalize">{contest.status}</td>
+                <tr
+                  key={contest._id}
+                  className="border-b hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <td className="py-3 px-6 font-medium">{contest.name}</td>
+                  <td className="py-3 px-6 capitalize">{contest.type}</td>
+                  <td className="py-3 px-6">
+                    <span
+                      className={`font-semibold ${
+                        contest.status === "pending"
+                          ? "bg-yellow-500 py-2 px-3 rounded-xl"
+                          : contest.status === "approved"
+                          ? "bg-green-500 py-2 px-3 rounded-xl"
+                          : "bg-red-500 py-2 px-3 rounded-xl"
+                      }`}
+                    >
+                      {contest.status}
+                    </span>
+                  </td>
                   <td className="py-3 px-6">
                     {new Date(contest.deadline).toLocaleDateString()}
                   </td>
-                  <td className="py-3 px-6">{contest.prize}</td>
+                  <td className="py-3 px-6 font-medium">${contest.prize}</td>
                   <td className="py-3 px-6 space-x-2">
-                    {/* Edit only if pending */}
+                    {/* Edit/Delete only if pending */}
                     {contest.status === "pending" && (
                       <>
                         <button
@@ -128,7 +148,6 @@ const MyContests = () => {
         </div>
       )}
     </div>
-
   );
 };
 
