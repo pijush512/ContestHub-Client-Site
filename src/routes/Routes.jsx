@@ -24,6 +24,7 @@ import MyWinning from "../pages/Dashboard/UserDashboard/MyWinning";
 import ManageUsers from "../pages/Dashboard/AdminDashboard/ManageUsers";
 import ManageContests from "../pages/Dashboard/AdminDashboard/ManageContests";
 import SubmittedTasks from "../pages/Dashboard/CreatorDashboard/SubmittedTasks";
+import Leaderboard from "../pages/Leaderboard";
 
 
 
@@ -53,6 +54,10 @@ export const router = createBrowserRouter([
       {
         path: 'extra-section',
         Component: ExtraSection
+      },
+      {
+        path: 'leaderboard',
+        Component: Leaderboard
       },
       {
         path: 'contest/:id',

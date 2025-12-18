@@ -69,28 +69,6 @@ const ContestDetails = () => {
     fetchParticipation();
   }, [id, user?.email, axiosSecure]);
 
-  // Submit task
-  // const submitTask = async () => {
-  //   if (!task.trim()) return alert("Please enter task details.");
-  //   try {
-  //     await axiosSecure.post("/submissions", {
-  //       contestId: contest._id,
-  //       userEmail: user.email,
-  //       task,
-  //       submittedAt: new Date(),
-  //     });
-  //     alert("Task submitted successfully!");
-  //     setTaskSubmitted(true);
-  //     setTask("");
-  //     setModalOpen(false);
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Task submission failed.");
-  //   }
-  // };
-
-
-  // ... বাকি কোড
 
   const submitTask = async () => {
     if (!task.trim()) {
@@ -106,11 +84,10 @@ const ContestDetails = () => {
       await axiosSecure.post("/submissions", {
         contestId: contest._id,
         userEmail: user.email,
-        taskLink: task, // আগের ভুলটি এখানে ঠিক করে দিলাম
+        taskLink: task, 
         submittedAt: new Date(),
       });
 
-      // সফল হলে এই অ্যালার্টটি দেখাবে
       Swal.fire({
         icon: 'success',
         title: 'Submitted!',
@@ -125,7 +102,6 @@ const ContestDetails = () => {
     } catch (err) {
       console.error(err);
 
-      // ব্যর্থ হলে এই অ্যালার্টটি দেখাবে
       Swal.fire({
         icon: 'error',
         title: 'Submission Failed',
