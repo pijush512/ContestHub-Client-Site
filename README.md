@@ -1,64 +1,50 @@
-# ContestHub 🎉
+ContestHub
+🌐 Live Website
 
-ContestHub is a modern, user-friendly web application for managing creative contests. Users can create, discover, participate in, and manage contests like design challenges, article writing competitions, business ideas, and more. The platform also supports Firebase authentication and secure participation management.
+👉 https://contesthub-d76ca.web.app
 
----
+📌 About ContestHub
 
-## Table of Contents
-- [Features](#features)
-- [Technologies](#technologies)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Folder Structure](#folder-structure)
-- [Contributing](#contributing)
-- [License](#license)
+ContestHub is a modern, responsive web platform designed to help users explore, manage, and participate in contests easily. The website focuses on clean UI, smooth navigation, and fast performance.
 
----
+✨ Key Features
 
-## Features ✨
-- User registration & login (Email/Password & Google Sign-In)
-- Contest creation & management
-- Participate in contests
-- Submit contest tasks
-- Countdown timer for contest deadlines
-- View contest winners
-- Secure participation with Firebase token verification
-- Responsive UI for desktop & mobile
+🔐 User-friendly and clean interface
 
----
+📱 Fully responsive design (mobile, tablet, desktop supported)
 
-## Technologies 🛠️
-- Frontend:
-  - React.js
-  - React Router
-  - React Hook Form
-  - Tailwind CSS / DaisyUI
-- Backend:
-  - Node.js
-  - Express.js
-  - MongoDB & Mongoose
-- Authentication:
-  - Firebase Authentication
-- Others:
-  - Axios for API calls
-  - Dotenv for environment variables
+⚡ Fast loading speed with optimized assets
 
+🌙 Modern UI layout with structured sections
 
+🧭 Easy navigation and well-organized pages
 
-# React + Vite
+🔄 Single Page Application (SPA) routing support
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🎨 Attractive color combination and typography
 
-Currently, two official plugins are available:
+🧩 Reusable components for better maintainability
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🌍 Deployed on Firebase Hosting for reliability
 
-## React Compiler
+🚀 Smooth deployment and live preview support
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+🛠️ Technologies Used
 
-## Expanding the ESLint configuration
+HTML5
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+CSS3
+
+JavaScript
+
+React / Vite (if applicable)
+
+Firebase Hosting
+
+📦 Deployment
+
+The website is deployed using Firebase Hosting. After building the project, the production-ready files are served from the dist directory.
+
+👤 Author
+
+Pijush Sarker

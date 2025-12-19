@@ -25,6 +25,8 @@ const ContestDetails = () => {
     },
   });
 
+  console.log(contest)
+
   const isExpired = contest ? new Date(contest.deadline) < new Date() : false;
 
   // Countdown timer
@@ -62,6 +64,7 @@ const ContestDetails = () => {
         );
         setIsRegistered(res.data.alreadyRegistered || false);
         setTaskSubmitted(res.data.taskSubmitted || false);
+        console.log(res.data)
       } catch (err) {
         console.error(err);
       }
@@ -93,7 +96,7 @@ const ContestDetails = () => {
         title: 'Submitted!',
         text: 'Your task has been submitted successfully.',
         showConfirmButton: false,
-        timer: 2000 // ২ সেকেন্ড পর অটো চলে যাবে
+        timer: 2000 
       });
 
       setTaskSubmitted(true);

@@ -17,7 +17,6 @@ const MyParticipate = () => {
     },
   });
 
-  // ডেডলাইন অনুযায়ী সর্টিং
   const sortedParticipated = [...participated].sort((a, b) => {
     const dateA = a.deadline ? new Date(a.deadline) : new Date(0);
     const dateB = b.deadline ? new Date(b.deadline) : new Date(0);
