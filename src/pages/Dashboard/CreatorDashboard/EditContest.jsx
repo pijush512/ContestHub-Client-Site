@@ -13,7 +13,7 @@ const EditContest = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/contest/${id}`)
+      .get(`https://contesthub-server-site.vercel.app/contest/${id}`)
       .then((res) => {
         const contest = res.data;
         setValue("name", contest.name);
@@ -30,7 +30,7 @@ const EditContest = () => {
 
   const onSubmit = (data) => {
     axios
-      .patch(`http://localhost:3000/contest/${id}`, data)
+      .patch(`https://contesthub-server-site.vercel.app/contest/${id}`, data)
       .then(() => {
         Swal.fire({
           icon: "success",

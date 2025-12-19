@@ -77,7 +77,7 @@ const Register = () => {
           photoURL: result.user.photoURL,
         }
 
-        axios.post('http://localhost:3000/users', userInfo)
+        axios.post('https://contesthub-server-site.vercel.app/users', userInfo)
           .then(res => {
             console.log('user data has been strod', res.data)
           })

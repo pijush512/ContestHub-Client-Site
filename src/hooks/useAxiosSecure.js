@@ -4,7 +4,7 @@ import useAuth from "./useAuth";
 import { useNavigate } from "react-router";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "https://contesthub-server-site.vercel.app",
 });
 
 const useAxiosSecure = () => {
@@ -14,7 +14,9 @@ const useAxiosSecure = () => {
   useEffect(() => {
     // intercept request
     const reqInterceptor = axiosSecure.interceptors.request.use((config) => {
-      config.headers.Authorization = `Bearer ${user.accessToken}`;
+      if (user) {
+        config.headers.Authorization = `Bearer ${user.accessToken}`;
+      }
       return config;
     });
 

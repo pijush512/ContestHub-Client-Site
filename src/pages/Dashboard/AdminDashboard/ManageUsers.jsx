@@ -37,10 +37,10 @@ const ManageUsers = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-3xl font-bold mb-6">Manage All Users</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center">Manage All Users</h2>
       <div className="overflow-x-auto shadow-md rounded-lg">
         <table className="table w-full">
-          <thead className="bg-blue-600 text-white">
+          <thead className="bg-gradient-to-b from-purple-500 to-indigo-600 text-white">
             <tr>
               <th>Name</th>
               <th>Email</th>
@@ -51,13 +51,13 @@ const ManageUsers = () => {
           <tbody>
             {users.map((u) => (
               <tr key={u._id} className="hover:bg-gray-50">
-                <td>{u.name}</td>
+                <td className="text-lg font-bold">{u.displayName}</td>
                 <td>{u.email}</td>
                 <td className="font-semibold uppercase text-sm">{u.role || "user"}</td>
                 <td className="space-x-2">
-                  <button onClick={() => handleRoleChange(u.email, "user")} className="btn btn-xs btn-outline">User</button>
-                  <button onClick={() => handleRoleChange(u.email, "creator")} className="btn btn-xs btn-primary">Creator</button>
-                  <button onClick={() => handleRoleChange(u.email, "admin")} className="btn btn-xs btn-success text-white">Admin</button>
+                  <button onClick={() => handleRoleChange(u.email, "user")} className="btn btn-sm btn-outline">User</button>
+                  <button onClick={() => handleRoleChange(u.email, "creator")} className="btn btn-sm btn-primary">Creator</button>
+                  <button onClick={() => handleRoleChange(u.email, "admin")} className="btn btn-sm btn-success text-white">Admin</button>
                 </td>
               </tr>
             ))}

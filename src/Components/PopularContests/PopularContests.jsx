@@ -3,13 +3,16 @@ import useAxiosSecure from '../../hooks/useAxiosSecure'
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router';
 
-const PopularContests = () => {
+const PopularContests = ({search}) => {
 
   const axiosSecure = useAxiosSecure();
   const { data: contests = [], isLoading } = useQuery({
-    queryKey: ["popularContests"],
+    queryKey: ["popularContests", search],
     queryFn: async () => {
-      const res = await axiosSecure.get("/contests/popular");
+      const endpoint = search ? `/contests?search=${search}` : "/contests/popular";
+      const res = await axiosSecure.get(endpoint);
+      // const res = await axiosSecure.get("/contests/popular");
+      console.log(res.data)
       return res.data
     }
   })
@@ -24,7 +27,7 @@ const PopularContests = () => {
 
 
   return (
-    <div className="my-16 max-w-7xl mx-auto px-4">
+    <div className="my-16 w-11/12 mx-auto px-4">
       {/* Section Header */}
       <div className="text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
@@ -40,7 +43,7 @@ const PopularContests = () => {
         {contests.map((contest) => (
           <div
             key={contest._id}
-            className="bg-white shadow-md rounded-xl overflow-hidden hover:shadow-xl transition"
+            className="bg-white shadow-xl rounded-xl overflow-hidden hover:shadow-xl transition"
           >
             {/* Image */}
             <img
@@ -80,7 +83,7 @@ const PopularContests = () => {
       <div className="text-center mt-10">
         <Link
           to="/allContests"
-          className="inline-block bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-black transition"
+          className="btn btn-primary rounded-lg"
         >
           Show All Contests
         </Link>

@@ -44,10 +44,10 @@ const ManageContests = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-3xl font-bold mb-6">Manage All Contests</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center">Manage All Contests</h2>
       <div className="overflow-x-auto shadow-md rounded-lg">
         <table className="table w-full">
-          <thead className="bg-purple-600 text-white">
+          <thead className="bg-gradient-to-t from-purple-500 to-indigo-600 text-white">
             <tr>
               <th>Title</th>
               <th>Creator</th>
@@ -58,7 +58,7 @@ const ManageContests = () => {
           <tbody>
             {contests.map((c) => (
               <tr key={c._id}>
-                <td>{c.name}</td>
+                <td className="font-bold text-lg">{c.name}</td>
                 <td>{c.creatorEmail}</td>
                 <td>
                   <span className={`badge font-bold p-3 ${c.status === 'approved' ? 'badge-success' : c.status === 'rejected' ? 'badge-error' : 'badge-warning'}`}>

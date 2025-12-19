@@ -77,11 +77,11 @@ const SubmittedTasks = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6 bg-base-100 min-h-screen">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 border-b-2 pb-2">
+      <h2 className="text-3xl font-bold text-center mb-6 text-gray-800 border-b-2 pb-5">
         Submitted Tasks ({submissions.length})
       </h2>
 
-      <div className="overflow-x-auto bg-white rounded-lg shadow-xl border">
+      <div className="overflow-x-auto bg-white rounded-lg shadow-xl">
         <table className="table w-full">
           {/* Table Header */}
           <thead className="bg-gray-100">
@@ -118,8 +118,6 @@ const SubmittedTasks = () => {
                     <span className="text-red-400 italic text-sm">No link provided</span>
                   )}
                 </td>
-
-                {/* ৪. উইনার ডিক্লেয়ার বাটন */}
                 <td className="text-center">
                   <button
                     onClick={() => handleDeclareWinner(sub)}
@@ -132,8 +130,6 @@ const SubmittedTasks = () => {
             ))}
           </tbody>
         </table>
-
-        {/* যদি কোনো সাবমিশন না থাকে */}
         {submissions.length === 0 && (
           <div className="p-20 text-center text-gray-400 italic text-xl">
             No submissions found yet.

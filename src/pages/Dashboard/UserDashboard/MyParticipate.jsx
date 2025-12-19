@@ -55,7 +55,7 @@ const MyParticipate = () => {
               {sortedParticipated.map((c, i) => (
                 <tr key={c._id} className="hover:bg-purple-50 transition border-b">
                   <td className="font-bold text-gray-400">{i + 1}</td>
-                  <td className="font-semibold text-gray-700">{c.title}</td>
+                  <td className="font-semibold text-gray-700">{c.name}</td>
                   <td className="text-green-600 font-bold">${c.prize || 0}</td>
                   <td>
                     {c.deadline ? format(new Date(c.deadline), "dd MMM yyyy") : "N/A"}

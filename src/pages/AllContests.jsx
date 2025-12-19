@@ -8,7 +8,7 @@
 //   const [activeType, setActiveType] = useState("All");
 
 //   useEffect(() => {
-//     fetch("http://localhost:3000/contest") // fetch all contests
+//     fetch("https://contesthub-server-site.vercel.app/contest") // fetch all contests
 //       .then((res) => res.json())
 //       .then((data) => {
 //         // filter only approved contests
@@ -116,7 +116,7 @@ const AllContests = () => {
     queryKey: ["allContests", activeTab],
     queryFn: async () => {
       const params = {};
-      if(activeTab !== "all")params.type = activeTab;
+      if (activeTab !== "all") params.type = activeTab;
       const res = await axiosSecure.get("/contests", { params });
       return res.data;
     },
@@ -141,11 +141,10 @@ const AllContests = () => {
           <button
             key={type}
             onClick={() => setActiveTab(type)}
-            className={`px-4 py-2 rounded font-medium ${
-              activeTab === type
+            className={`px-4 py-2 rounded font-medium ${activeTab === type
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-            }`}
+              }`}
           >
             {type}
           </button>
@@ -183,12 +182,6 @@ const AllContests = () => {
               {/* Details Button */}
               <button
                 onClick={() => {
-                  // const token = localStorage.getItem("access-token");
-                  // if (!token) {
-                  //   navigate("/login");
-                  // } else {
-                  //   navigate(`/contest/${contest._id}`);
-                  // }
                   navigate(`/contest/${contest._id}`)
                 }}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

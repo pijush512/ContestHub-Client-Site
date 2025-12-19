@@ -6,7 +6,7 @@ const ExtraSection = () => {
       <div className="container mx-auto px-4">
         
         {/* Header Part */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center w-11/12 mx-auto mb-16">
           <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">
             Why Choose <span className="text-blue-600">ContestHub</span>?
           </h2>

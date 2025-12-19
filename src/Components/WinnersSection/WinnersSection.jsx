@@ -22,7 +22,7 @@ const WinnersSection = () => {
   if (isError) return <p className="text-center py-20 text-red-300">Something went wrong!</p>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-500 to-indigo-600 py-16 px-6 text-white">
+    <div className="min-h-screen bg-gradient-to-r from-purple-500 to-indigo-600 py-16 px-6 text-white w-11/12 mx-auto">
       <div className="max-w-7xl mx-auto text-center">
         <h1 className="text-5xl font-bold mb-6">All Winners</h1>
         <p className="mb-10 text-lg opacity-90">

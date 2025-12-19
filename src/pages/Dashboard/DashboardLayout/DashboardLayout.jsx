@@ -56,7 +56,7 @@ const DashboardLayout = () => {
   return (
     <>
       <Navbar></Navbar>
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen w-11/12 mx-auto">
 
         {/* Sidebar */}
         <aside className="w-64 bg-gray-900 text-white p-5 space-y-4">
@@ -71,7 +71,7 @@ const DashboardLayout = () => {
               <>
                 <NavLink to="/dashboard/my-participated" className={({ isActive }) => (isActive ? "block text-blue-400" : "block hover:text-blue-300")}>My Participated</NavLink>
                 <NavLink to="/dashboard/my-winning" className="block">My Winning</NavLink>
-                <NavLink to="/dashboard/my-profile" className="block">My Profile</NavLink>
+                
               </>
             </div>
 
@@ -80,7 +80,6 @@ const DashboardLayout = () => {
           {/* for creator */}
           {role === 'creator' && (
             <div className="space-y-4">
-              {/* ক্রিয়েটরের জন্য হেডিং */}
               <h3 className="text-xs uppercase tracking-widest text-orange-500 font-semibold mb-2">
                 Creator Panel
               </h3>
@@ -112,8 +111,9 @@ const DashboardLayout = () => {
             </div>
           )}
 
-          {/* ৪. কমন মেনু (সবার জন্য) */}
+          {/* Common menu */}
           <hr className="border-gray-700 my-4" />
+          <NavLink to="/dashboard/my-profile" className="block">My Profile</NavLink>
           <NavLink to="/dashboard/payment-history" className="block">Payment History</NavLink>
           <NavLink to="/" className="block">Home</NavLink>
         </aside>

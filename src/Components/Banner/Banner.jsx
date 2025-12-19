@@ -5,12 +5,11 @@ const Banner = ({ onSearch }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (onSearch) onSearch(query); // send search value to parent
+    if (onSearch) onSearch(query); 
   };
 
   return (
-    <div className="relative w-full h-[70vh] md:h-[80vh] flex items-center justify-center">
-      {/* Background Image */}
+    <div className="relative  h-[70vh] md:h-[80vh] flex items-center justify-center w-11/12 mx-auto">
       <img
         src="https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2070"
         alt="banner"

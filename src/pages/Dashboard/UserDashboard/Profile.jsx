@@ -4,6 +4,8 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { updateProfile } from "firebase/auth";
+import Swal from "sweetalert2";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -52,7 +54,7 @@ const Profile = () => {
   const winPercentage = totalParticipated > 0 ? Math.round((totalWon / totalParticipated) * 100) : 0;
 
   const { register, handleSubmit, reset, watch } = useForm();
-  const photoURL = watch("photoURL"); 
+  const photoURL = watch("photoURL");
 
   useEffect(() => {
     if (profile) {
@@ -66,17 +68,40 @@ const Profile = () => {
 
   const onSubmit = async (data) => {
     try {
+
+      Swal.fire({
+        title: 'Updating Profile...',
+        text: 'Please wait while we save your changes.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
       const updatedData = {
-        name: data.name.trim() || user?.displayName,
+        displayName: data.name.trim() || user?.displayName,
         photoURL: data.photoURL.trim() || user?.photoURL || "",
         bio: data.bio.trim() || "",
       };
 
-      const res = await axiosSecure.patch(`/users/${user?.email}`, updatedData);
+      const serverRes = await axiosSecure.patch(`/users/${user?.email}`, updatedData);
+      console.log(serverRes.data)
+
+      // update profile first
+
+       await updateProfile(user, updatedData);
+
+      // const updated = await res.json();
 
       // Backend response check (Object success or status 200)
-      if (res.data.success || res.status === 200) {
-        toast.success("Profile updated successfully!");
+      if (serverRes.data || serverRes.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Profile Updated!',
+          text: 'Your profile information has been saved successfully.',
+          timer: 2000,
+          showConfirmButton: false
+        });
         queryClient.invalidateQueries(["profile", user?.email]);
       }
     } catch (err) {
@@ -97,8 +122,8 @@ const Profile = () => {
     <div className="min-h-screen rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800">My Profile</h1>
-          <p className="text-gray-600 mt-2">Manage your personal information and stats</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-white">My Profile</h1>
+          <p className="text-gray-200 mt-2">Manage your personal information and stats</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -117,15 +142,15 @@ const Profile = () => {
 
               <h2 className="text-2xl font-bold text-gray-800">{profile.name || user?.displayName}</h2>
               <p className="text-gray-500 mb-4">{user?.email}</p>
-              
+
               {profile.bio && <p className="text-sm italic text-gray-600 mb-6">"{profile.bio}"</p>}
 
               {/* Dynamic Win Rate Chart */}
               <div className="mt-8">
                 <div className="text-center">
-                  <div className="radial-progress text-primary" 
-                       style={{ "--value": winPercentage, "--size": "10rem", "--thickness": "12px" }} 
-                       role="progressbar">
+                  <div className="radial-progress text-primary"
+                    style={{ "--value": winPercentage, "--size": "10rem", "--thickness": "12px" }}
+                    role="progressbar">
                     <span className="text-2xl font-bold">{winPercentage}%</span>
                   </div>
                   <h3 className="text-lg font-semibold mt-4">Win Rate</h3>
@@ -192,8 +217,8 @@ const Profile = () => {
                 </div>
 
                 <div className="pt-4">
-                  <button type="submit" 
-                  className="btn btn-lg w-full shadow-xl bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl">
+                  <button type="submit"
+                    className="btn btn-lg w-full text-white shadow-xl bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl">
                     Save Changes
                   </button>
                 </div>
