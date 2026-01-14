@@ -14,7 +14,7 @@ const Home = () => {
 const [search, setSearch] = useState("");
 
   return (
-    <div>
+    <div className='bg-gray-100'>
       <Banner onSearch={setSearch} ></Banner>
       <StatsSection></StatsSection>
       <FeaturedCategories></FeaturedCategories>

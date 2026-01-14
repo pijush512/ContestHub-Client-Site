@@ -1,5 +1,4 @@
 import React from "react";
-// Swiper React components and styles
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
@@ -43,31 +42,26 @@ const Banner = () => {
         {sliderData.map((slide) => (
           <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full">
-              {/* Background Image */}
               <img
                 src={slide.image}
                 alt={slide.title}
                 className="w-full h-full object-cover"
               />
-              {/* Overlay */}
+
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/80 flex items-center justify-center">
                 <div className="text-center px-6 max-w-4xl animate-fadeIn">
-                  {/* Badge */}
                   <span className="inline-block bg-blue-600 text-white text-xs md:text-sm font-bold px-4 py-1 rounded-full mb-4 uppercase tracking-widest">
                     Featured Contest
                   </span>
                   
-                  {/* Title */}
                   <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-2xl">
                     {slide.title}
                   </h1>
                   
-                  {/* Subtitle */}
                   <p className="text-gray-200 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
                     {slide.subTitle}
                   </p>
 
-                  {/* Search Bar Inside Slider */}
                   <div className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-2xl w-full max-w-xl mx-auto shadow-2xl">
                     <input
                       type="text"
@@ -85,7 +79,6 @@ const Banner = () => {
         ))}
       </Swiper>
 
-      {/* Custom Styles for Swiper Pagination/Navigation */}
       <style jsx global>{`
         .swiper-button-next, .swiper-button-prev {
           color: white !important;
