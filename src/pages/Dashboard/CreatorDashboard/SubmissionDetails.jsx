@@ -2,9 +2,8 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
 import Swal from "sweetalert2";
-
-// আলাদা ছোট কম্পোনেন্ট ইমেইল দিয়ে ইউজারের নাম খুঁজে বের করার জন্য
 const ParticipantName = ({ email }) => {
   const axiosSecure = useAxiosSecure();
   const { data: userDetails } = useQuery({
@@ -13,146 +12,111 @@ const ParticipantName = ({ email }) => {
       const res = await axiosSecure.get(`/users/${email}`);
       return res.data;
     },
-    enabled: !!email, // ইমেইল থাকলে তবেই কল হবে
+    enabled: !!email,
   });
-  // আসল নাম না থাকলে ইমেইলের প্রথম অংশ দেখাবে
   return <span>{userDetails?.name || email.split("@")[0]}</span>;
 };
 
 const SubmissionDetails = () => {
-  const { id } = useParams(); // URL থেকে কন্টেস্ট আইডি
+  const { id } = useParams();
+  const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  // ১. এই কন্টেস্টের সব সাবমিশন নিয়ে আসা
   const { data: submissions = [], isLoading: isSubLoading, refetch: subRefetch } = useQuery({
-    queryKey: ["submissions", id],
+    queryKey: ["submissions", id, user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/creator/submissions/${id}`);
+      const endpoint = id 
+        ? `/creator/submissions/${id}` 
+        : `/creator/all-submissions/${user?.email}`;
+      const res = await axiosSecure.get(endpoint);
       return res.data;
     },
   });
 
-  // ২. কন্টেস্টের বর্তমান ডাটা (উইনার আছে কি না চেক করার জন্য)
   const { data: contest = {}, isLoading: isContestLoading, refetch: contestRefetch } = useQuery({
     queryKey: ["contest-single", id],
     queryFn: async () => {
+      if (!id) return {};
       const res = await axiosSecure.get(`/contest/${id}`);
       return res.data;
     },
+    enabled: !!id,
   });
 
-  // ৩. উইনার ডিক্লেয়ার করার ফাংশন
   const handleDeclareWinner = async (sub) => {
     try {
-      // ইউজারের বিস্তারিত তথ্য আনা
-      const userRes = await axiosSecure.get(`/users/${sub.userEmail}`);
-      const userData = userRes.data;
-
       const confirm = await Swal.fire({
-        title: "Declare Winner?",
-        text: `Are you sure you want to declare ${userData.name || sub.userEmail} as the winner?`,
+        title: "Are you sure?",
+        text: `Declare ${sub.userEmail} as the winner?`,
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#28a745",
-        cancelButtonColor: "#d33",
+        confirmButtonColor: "#22c55e",
         confirmButtonText: "Yes, Declare!",
       });
 
       if (confirm.isConfirmed) {
         const winnerData = {
           winnerEmail: sub.userEmail,
-          winnerName: userData.name || "Unknown Participant",
-          winnerPhoto: userData.photo || "https://i.ibb.co/PNG-placeholder.png",
+          winnerName: "Winner", 
+          winnerPhoto: "https://i.ibb.co/PNG-placeholder.png",
         };
 
-        // ব্যাকএন্ডে উইনার ডিক্লেয়ার করার রিকোয়েস্ট
-        const res = await axiosSecure.patch(`/contest/declare-winner/${id}`, winnerData);
+        const res = await axiosSecure.patch(`/contest/declare-winner/${sub.contestId}`, winnerData);
 
         if (res.data.modifiedCount > 0) {
-          Swal.fire("Congratulations!", "Winner has been successfully declared.", "success");
+          Swal.fire("Success!", "Winner has been declared.", "success");
           subRefetch(); 
-          contestRefetch();
+          if(id) contestRefetch();
         }
       }
     } catch (err) {
-      console.error(err);
-      Swal.fire("Error", "Failed to declare winner.", "error");
+      Swal.fire("Error", "Action failed", err);
     }
   };
 
-  if (isSubLoading || isContestLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
+  if (isSubLoading || (id && isContestLoading)) {
+    return <div className="p-10 text-center text-blue-500">Loading Submissions...</div>;
   }
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 p-6 bg-white shadow-2xl rounded-2xl">
-      <div className="mb-8 border-b pb-4">
-        <h2 className="text-3xl font-bold text-gray-800">
-          Submissions for: <span className="text-blue-600">{contest.name}</span>
-        </h2>
-        {contest.winnerEmail && (
-          <div className="mt-3 inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full font-bold shadow-sm">
-            🏆 Winner: {contest.winnerName} ({contest.winnerEmail})
-          </div>
-        )}
-      </div>
+    <div className="max-w-6xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
+      <h2 className="text-2xl font-bold mb-6 border-b pb-4">
+        {id ? `Submissions for Contest ID: ${id}` : "All Submitted Tasks"}
+      </h2>
 
       <div className="overflow-x-auto">
-        <table className="table w-full border border-gray-100">
-          <thead className="bg-gray-800 text-white">
+        <table className="table w-full border">
+          <thead className="bg-gray-100">
             <tr>
-              <th className="py-4">Participant Details</th>
-              <th className="py-4">Submitted Task Info</th>
-              <th className="py-4 text-center">Action</th>
+              <th className="p-3">Participant</th>
+              <th className="p-3">Contest ID</th>
+              <th className="p-3">Task Link</th>
+              <th className="p-3 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
             {submissions.map((sub) => (
-              <tr key={sub._id} className="hover:bg-gray-50 border-b transition-colors">
-                {/* ১. পার্টিসিপেন্ট নাম ও ইমেইল */}
-                <td className="py-4">
-                  <div className="font-bold text-gray-800 text-lg">
+              <tr key={sub._id} className="border-b">
+                <td className="p-3">
+                  <div className="flex flex-col">
                     <ParticipantName email={sub.userEmail} />
+                    <span className="text-xs text-gray-400">{sub.userEmail}</span>
                   </div>
-                  <div className="text-sm text-gray-500 font-medium italic">{sub.userEmail}</div>
                 </td>
-
-                {/* ২. সাবমিটেড টাস্ক লিঙ্ক */}
-                <td className="py-4">
-                  {sub.taskLink ? (
-                    <a 
-                      href={sub.taskLink} 
-                      target="_blank" 
-                      rel="noreferrer" 
-                      className="btn btn-outline btn-info btn-xs normal-case"
-                    >
-                      View Submitted Task
-                    </a>
-                  ) : (
-                    <span className="text-red-400 text-sm italic">No link provided</span>
-                  )}
+                <td className="p-3 text-sm text-gray-500">{sub.contestId}</td>
+                <td className="p-3">
+                  <a href={sub.taskLink} target="_blank" rel="noreferrer" className="text-blue-600 underline text-sm">
+                    View Task
+                  </a>
                 </td>
-
-                {/* ৩. বাটন লজিক */}
-                <td className="py-4 text-center">
-                  {contest.winnerEmail ? (
-                    <div className="flex justify-center">
-                      {contest.winnerEmail === sub.userEmail ? (
-                        <span className="badge badge-success text-white py-4 px-6 font-bold shadow-md">
-                          🏆 SELECTED WINNER
-                        </span>
-                      ) : (
-                        <span className="badge badge-ghost text-gray-400">Not Selected</span>
-                      )}
-                    </div>
+                <td className="p-3 text-center">
+                  {(id ? contest.winnerEmail === sub.userEmail : sub.status === "winner") ? (
+                    <span className="badge badge-success text-white">🏆 Winner</span>
                   ) : (
                     <button
                       onClick={() => handleDeclareWinner(sub)}
-                      className="btn btn-sm btn-success text-white px-6 shadow hover:scale-105 transition-transform"
+                      disabled={id ? !!contest.winnerEmail : false}
+                      className="btn btn-xs btn-neutral"
                     >
                       Declare Winner
                     </button>
@@ -162,11 +126,8 @@ const SubmissionDetails = () => {
             ))}
           </tbody>
         </table>
-
         {submissions.length === 0 && (
-          <div className="text-center py-20 bg-gray-50 rounded-xl mt-4 text-gray-400 italic text-lg">
-            No one has submitted any tasks for this contest yet.
-          </div>
+          <p className="text-center py-10 text-gray-400">No submissions found.</p>
         )}
       </div>
     </div>

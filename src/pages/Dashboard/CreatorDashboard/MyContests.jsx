@@ -112,6 +112,7 @@ const MyContests = () => {
                           <button onClick={() => handleContestDelete(contest._id)} className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">Delete</button>
                         </>
                       )}
+                      {/* <button onClick={() => navigate(`/dashboard/creator/submissions/${contest._id}`)} className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">See Submissions</button> */}
                       <button onClick={() => navigate(`/dashboard/creator/submissions/${contest._id}`)} className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">See Submissions</button>
                     </td>
                   </tr>

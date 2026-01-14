@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
 import HomeLayout from "../Layout/HomeLayout/HomeLayout";
 import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
@@ -14,22 +14,22 @@ import ContestDetails from "../pages/ContestDetails";
 import Login from "../pages/Login"
 import Register from "../pages/Register"
 import Payment from "../pages/Dashboard/Payment/Payment";
-import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
-import PaymentCanceled from "../pages/Dashboard/Payment/PaymentCanceled";
 import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 import ExtraSection from "../pages/ExtraSection";
-import SubmissionDetails from "../pages/Dashboard/CreatorDashboard/SubmissionDetails";
 import MyParticipate from "../pages/Dashboard/UserDashboard/MyParticipate";
 import MyWinning from "../pages/Dashboard/UserDashboard/MyWinning";
 import ManageUsers from "../pages/Dashboard/AdminDashboard/ManageUsers";
 import ManageContests from "../pages/Dashboard/AdminDashboard/ManageContests";
-import SubmittedTasks from "../pages/Dashboard/CreatorDashboard/SubmittedTasks";
 import Leaderboard from "../pages/Leaderboard";
 import AboutUs from "../pages/AboutUs";
 import ContactUs from "../pages/ContactUs";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import TermsOfService from "../pages/TermsOfService";
 import DashboardHome from "../pages/Dashboard/DashboardHome";
+import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
+import PaymentCanceled from "../pages/Dashboard/Payment/PaymentCanceled";
+import SubmittedTasks from "../pages/Dashboard/CreatorDashboard/SubmittedTasks";
+import SubmissionDetails from "../pages/Dashboard/CreatorDashboard/SubmissionDetails";
 
 export const router = createBrowserRouter([
   {
@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
         </PrivateRoute>
       },
       {
-        path:'extra-section',
+        path: 'extra-section',
         Component: ExtraSection
       },
       {
@@ -130,12 +130,28 @@ export const router = createBrowserRouter([
         element: <AddContest />,
       },
       {
+        path: "creator/edit-contest/:id", 
+        element: <EditContest />
+      },
+      {
         path: "creator/submitted-tasks",
-        element: <SubmittedTasks />,
+        element: <SubmittedTasks />
+      },
+      {
+        path: "creator/submissions/:id",
+        element: <SubmissionDetails></SubmissionDetails>
       },
       {
         path: "payment/:contestId",
         element: <Payment />
+      },
+      {
+        path: "payment-success",
+        element: <PaymentSuccess></PaymentSuccess>
+      },
+      {
+        path: "payment-canceled",
+        element: <PaymentCanceled></PaymentCanceled>
       },
       {
         path: "payment-history",
