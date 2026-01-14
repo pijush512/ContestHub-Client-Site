@@ -12,6 +12,8 @@ const Navbar = () => {
     <li><NavLink className="font-semibold" to='/allContests'>AllContests</NavLink></li>
     <li><NavLink className="font-semibold" to='/extra-section'>Extra Section</NavLink></li>
     <li><NavLink className="font-semibold" to='/leaderboard'>Leaderboard</NavLink></li>
+    <li><NavLink className="font-semibold" to='/about'>About Us</NavLink></li>
+    <li><NavLink className="font-semibold" to='/contact'>Contact Us</NavLink></li>
   </>
 
   const handleLogout = () => {

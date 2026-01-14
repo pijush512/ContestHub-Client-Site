@@ -1,2 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
+
 @plugin "daisyui";
+
+
+@theme {
+  --font-heading: "Montserrat", sans-serif;
+  --font-body: "Inter", sans-serif;
+  
+  /* প্রজেক্টের রিকোয়ারমেন্ট অনুযায়ী ৩টি প্রাইমারি কালার এখানে সেট করতে পারো */
+  /* --color-primary: #2563eb;
+  --color-secondary: #0ea5e9;
+  --color-accent: #f59e0b; */
+
+}
+
+
+@layer base {
+  body {
+    @apply font-body antialiased; 
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading; 
+  }
+}

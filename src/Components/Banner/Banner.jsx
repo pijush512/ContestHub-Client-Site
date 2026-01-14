@@ -1,55 +1,114 @@
-import React, { useState } from "react";
+import React from "react";
+// Swiper React components and styles
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/effect-fade";
 
-const Banner = ({ onSearch }) => {
-  const [query, setQuery] = useState("");
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (onSearch) onSearch(query); 
-  };
+const Banner = () => {
+  const sliderData = [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070",
+      title: "Unlock Your Potential in Coding",
+      subTitle: "Join the elite developers in our next global hackathon.",
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070",
+      title: "Master the Art of Design",
+      subTitle: "Showcase your creativity and win amazing prizes.",
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=2070",
+      title: "Innovation at its Peak",
+      subTitle: "The ultimate battle for tech innovators is here.",
+    },
+  ];
 
   return (
-    <div className="relative  h-[70vh] md:h-[80vh] flex items-center justify-center w-11/12 mx-auto">
-      <img
-        src="https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2070"
-        alt="banner"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+    <div className="relative w-full h-[70vh] md:h-[80vh] overflow-hidden">
+      <Swiper
+        modules={[Navigation, Pagination, Autoplay, EffectFade]}
+        effect={"fade"}
+        navigation={true}
+        pagination={{ clickable: true }}
+        autoplay={{ delay: 5000 }}
+        loop={true}
+        className="h-full w-full"
+      >
+        {sliderData.map((slide) => (
+          <SwiperSlide key={slide.id}>
+            <div className="relative w-full h-full">
+              {/* Background Image */}
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="w-full h-full object-cover"
+              />
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/80 flex items-center justify-center">
+                <div className="text-center px-6 max-w-4xl animate-fadeIn">
+                  {/* Badge */}
+                  <span className="inline-block bg-blue-600 text-white text-xs md:text-sm font-bold px-4 py-1 rounded-full mb-4 uppercase tracking-widest">
+                    Featured Contest
+                  </span>
+                  
+                  {/* Title */}
+                  <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-2xl">
+                    {slide.title}
+                  </h1>
+                  
+                  {/* Subtitle */}
+                  <p className="text-gray-200 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+                    {slide.subTitle}
+                  </p>
 
-      {/* Dark / Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/70"></div>
+                  {/* Search Bar Inside Slider */}
+                  <div className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-2xl w-full max-w-xl mx-auto shadow-2xl">
+                    <input
+                      type="text"
+                      placeholder="Find your contest..."
+                      className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-white placeholder-gray-300"
+                    />
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-all">
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-3xl">
-        <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-          Find the Perfect Contest For You
-        </h1>
-
-        <p className="text-gray-200 text-sm md:text-lg mb-8">
-          Search by contest type, category, or topic
-        </p>
-
-        {/* Search Box */}
-        <form
-          onSubmit={handleSearch}
-          className="flex items-center bg-white/90 backdrop-blur-lg rounded-xl px-4 py-2 w-full shadow-lg"
-        >
-          <input
-            type="text"
-            placeholder="Search contest type…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 bg-transparent outline-none px-2 py-2 text-gray-700"
-          />
-
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all"
-          >
-            Search
-          </button>
-        </form>
-      </div>
+      {/* Custom Styles for Swiper Pagination/Navigation */}
+      <style jsx global>{`
+        .swiper-button-next, .swiper-button-prev {
+          color: white !important;
+          transform: scale(0.6);
+        }
+        .swiper-pagination-bullet {
+          background: white !important;
+          opacity: 0.5;
+        }
+        .swiper-pagination-bullet-active {
+          background: #2563eb !important;
+          opacity: 1;
+          width: 25px;
+          border-radius: 10px;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 1s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 };

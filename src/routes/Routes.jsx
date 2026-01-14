@@ -25,106 +25,180 @@ import ManageUsers from "../pages/Dashboard/AdminDashboard/ManageUsers";
 import ManageContests from "../pages/Dashboard/AdminDashboard/ManageContests";
 import SubmittedTasks from "../pages/Dashboard/CreatorDashboard/SubmittedTasks";
 import Leaderboard from "../pages/Leaderboard";
+import AboutUs from "../pages/AboutUs";
+import ContactUs from "../pages/ContactUs";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import TermsOfService from "../pages/TermsOfService";
+import DashboardHome from "../pages/Dashboard/DashboardHome";
+
+
+// export const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <HomeLayout></HomeLayout>,
+//     errorElement: <NotFound></NotFound>,
+//     children: [
+//       {
+//         index: true,
+//         path: '/',
+//         Component: Home,
+//       },
+//       {
+//         path: 'allContests',
+//         Component: AllContests
+//       },
+//       {
+//         path: '/login',
+//         Component: Login,
+//       },
+//       {
+//         path: '/register',
+//         Component: Register,
+//       },
+//       {
+//         path: 'extra-section',
+//         Component: ExtraSection
+//       },
+//       {
+//         path: 'leaderboard',
+//         Component: Leaderboard
+//       },
+//       {
+//         path: 'about',
+//         Component: AboutUs
+//       },
+//       {
+//         path: 'contact',
+//         Component: ContactUs
+//       },
+//       {
+//         path: 'privacy',
+//         Component: PrivacyPolicy
+//       },
+//       {
+//         path: 'terms',
+//         Component: TermsOfService
+//       },
+//       {
+//         path: 'contest/:id',
+//         element: <PrivateRoute>
+//           <ContestDetails></ContestDetails>
+//         </PrivateRoute>
+//       },
+//     ]
+//   },
+//   {
+//     path: "/dashboard",
+//     element: <PrivateRoute>
+//       <DashboardLayout></DashboardLayout>
+//     </PrivateRoute>,
+//     children: [
+//       {
+//         index: true,
+//         element: <DashboardHome />,
+//       },
+//       {
+//         path: "admin",
+//         element: <AdminDashboard />,
+//       },
+//       {
+//         path: "manage-users",
+//         element: <ManageUsers />,
+//       },
+//       {
+//         path: "manage-contests",
+//         element: <ManageContests />,
+//       },
+//     ],
+//   },
+//   {
+//     path: "creator",
+//     children: [
+//       {
+//         path: "my-contests",
+//         element: <MyContests></MyContests>
+//       },
+//       {
+//         path: "add-contest",
+//         element: <AddContest />,
+//       },
+//       {
+//         path: "submitted-tasks",
+//         element: <SubmittedTasks></SubmittedTasks>
+//       },
+//       {
+//         path: "edit-contest/:id",
+//         element: <EditContest />,
+//         loader: ({ params }) =>
+//           fetch(`${import.meta.env.VITE_API_URL}/contest/${params.id}`),
+//       },
+//       {
+//         path: "submissions/:id",
+//         element: <SubmissionDetails />,
+//       },
+//     ],
+//   },
+//   {
+//     path: "payment/:contestId",
+//     element: <Payment></Payment>
+//   },
+//   {
+//     path: "payment-success",
+//     Component: PaymentSuccess,
+//   },
+//   {
+//     path: "payment-cancelled",
+//     Component: PaymentCanceled,
+//   },
+//   {
+//     path: "my-participated",
+//     element: <MyParticipate />
+//   },
+//   {
+//     path: "my-winning",
+//     element: <MyWinning />
+//   },
+//   {
+//     path: "my-profile",
+//     element: <Profile />,
+//   },
+//   {
+//     path: "payment-history",
+//     Component: PaymentHistory
+//   }
+// ]
+
+// );
 
 
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomeLayout></HomeLayout>,
-    errorElement: <NotFound></NotFound>,
+    element: <HomeLayout />,
+    errorElement: <NotFound />,
     children: [
-      {
-        index: true,
-        path: '/',
-        Component: Home,
-      },
-      {
-        path: 'allContests',
-        Component: AllContests
-      },
-      {
-        path: '/login',
-        Component: Login,
-      },
-      {
-        path: '/register',
-        Component: Register,
-      },
-      {
-        path: 'extra-section',
-        Component: ExtraSection
-      },
-      {
-        path: 'leaderboard',
-        Component: Leaderboard
-      },
-      {
-        path: 'contest/:id',
-        element: <PrivateRoute>
-          <ContestDetails></ContestDetails>
-        </PrivateRoute>
-      },
+      { index: true, element: <Home /> },
+      { path: 'allContests', element: <AllContests /> },
+      { path: 'login', element: <Login /> },
+      { path: 'register', element: <Register /> },
+      { path: 'contest/:id', element: <PrivateRoute><ContestDetails /></PrivateRoute> },
+      // বাকি হোম পেজের রাউটগুলো এখানে...
     ]
   },
   {
     path: "/dashboard",
-    element: <PrivateRoute>
-      <DashboardLayout></DashboardLayout>
-    </PrivateRoute>,
+    element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
     children: [
+      // ১. ড্যাশবোর্ড হোম (এটি /dashboard পাথে দেখাবে)
       {
-        path: "admin",
-        children: [
-          {
-            path: "manage-users",
-            element: <ManageUsers />,
-          },
-          {
-            path: "manage-contests",
-            element: <ManageContests />,
-          },
-        ],
+        index: true,
+        element: <DashboardHome />,
       },
+      // ২. প্রোফাইল ও ইউজার রাউটস (এগুলো /dashboard/my-profile পাথে দেখাবে)
       {
-        path: "creator",
-        children: [
-          {
-            path: "my-contests",
-            // index: true,
-            element: <MyContests></MyContests>
-          },
-          {
-            path: "add-contest",
-            element: <AddContest />,
-          },
-          {
-            path: "submitted-tasks",
-            element: <SubmittedTasks></SubmittedTasks>
-          },
-          {
-            path: "edit-contest/:id",
-            element: <EditContest />,
-            loader: ({ params }) =>
-              fetch(`${import.meta.env.VITE_API_URL}/contest/${params.id}`),
-          },
-          {
-            path: "submissions/:id",
-            element: <SubmissionDetails />,
-          },
-        ],
-      },
-      {
-        path: "payment/:contestId",
-        element: <Payment></Payment>
-      },
-      {
-        path: "payment-success",
-        Component: PaymentSuccess,
-      },
-      {
-        path: "payment-cancelled",
-        Component: PaymentCanceled,
+        path: "my-profile",
+        element: <Profile />,
       },
       {
         path: "my-participated",
@@ -134,13 +208,36 @@ export const router = createBrowserRouter([
         path: "my-winning",
         element: <MyWinning />
       },
+      // ৩. অ্যাডমিন রাউটস
       {
-        path: "my-profile",
-        element: <Profile />,
+        path: "admin/manage-users",
+        element: <ManageUsers />,
+      },
+      {
+        path: "admin/manage-contests",
+        element: <ManageContests />,
+      },
+      // ৪. ক্রিয়েটর রাউটস
+      {
+        path: "creator/my-contests",
+        element: <MyContests />
+      },
+      {
+        path: "creator/add-contest",
+        element: <AddContest />,
+      },
+      {
+        path: "creator/submitted-tasks",
+        element: <SubmittedTasks />,
+      },
+      // ৫. পেমেন্ট রাউটস
+      {
+        path: "payment/:contestId",
+        element: <Payment />
       },
       {
         path: "payment-history",
-        Component: PaymentHistory
+        element: <PaymentHistory />
       }
     ]
   }
